@@ -64,6 +64,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/Data-Sartika/{id}/edit', [PosyanduController::class, 'showEdit']);
     Route::put('/Data-Sartika/{id}', [PosyanduController::class, 'update']);
     Route::delete('/Data-Sartika/{id}', [PosyanduController::class, 'hapusPos']);
+    Route::post('/Data-Sartika/import', [PosyanduController::class, 'import'])->name('sartika.import');
 
     // Tambah Pengguna
     Route::get('/Pengguna', [HomeController::class, 'viewPengguna'])->name('viewPengguna');
@@ -73,7 +74,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     //Pengaturan
     Route::get('/Pengaturan-admin', [PengaturanController::class, 'index'])->name('stunting.import.form');
+    Route::get('/admin/stunting/template', [PengaturanController::class, 'templateIMT'])->name('stunting.template');
+    Route::get('/admin/sartika/template', [PengaturanController::class, 'templates'])->name('sartika.template');
     Route::post('/admin/stunting/import', [PengaturanController::class, 'import'])->name('stunting.import');
+
 
 
     Route::get('/markAsRead', function() {
@@ -85,6 +89,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 Route::middleware(['auth', 'role:kader'])->group(function () {
     //Kader
     Route::get('/dashboard1', [KaderController::class, 'index']);
+    Route::get('/kader/anak/{anak}/edit', [KaderController::class, 'edit'])->name('kader.anak.edit');
+    Route::put('/kader/anak/{anak}', [KaderController::class, 'update'])->name('kader.anak.update');
+    Route::delete('/kader/anak/{anak}', [KaderController::class, 'destroy'])->name('kader.anak.destroy');
     Route::get('/Pesan', [KaderController::class, 'viewPesan']);
 
     //Anak
@@ -97,6 +104,7 @@ Route::middleware(['auth', 'role:kader'])->group(function () {
 
     Route::get('/Laporan-anak', [KaderController::class, 'viewLaporan']);
     Route::post('/Laporan-simpan', [KaderController::class, 'simpanLaporan'])->name('simpan.Laporan');
+    Route::post('/laporan-anak/import', [KaderController::class, 'import'])->name('laporan-anak.import');
 
 
 });

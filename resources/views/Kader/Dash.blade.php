@@ -12,15 +12,36 @@
 
 <body>
     {{-- head --}}
-    <div class="bg-gradient-to-r relative from-cyan-800 to-cyan-600 h-28 drop-shadow-lg">
-        <img src="img/edge dec1.png" class="absolute size-56 right-0 rotate-90 overflow-hidden" alt="">
-        <div class="p-4 text-white font-semibold">
-            <p class="">Selamat Datang</p>
-            <p class="text-xl">Posyandu {{ $user->name }}</p>
+    <div class="bg-gradient-to-r w-full fixed from-cyan-800 to-cyan-600 h-28 drop-shadow-lg">
+        <div class="p-4 text-white font-semibold flex justify-between max-w-7xl mx-auto">
+            <div>
+                <p class="">Selamat Datang</p>
+                <p class="text-xl">Posyandu {{ $user->name }}</p>
+            </div>
+            <a href="/Logout" class="mt-5">
+                <div class="bg-red-500 p-1 hover:bg-red-900 rounded-sm">Keluar
+                </div>
+            </a>
         </div>
+
     </div>
     {{-- Section --}}
-    <div class="p-4 flex flex-wrap justify-center gap-4">
+    @if (session('success'))
+        <div class="absolute right-0 z-10 top-5 animate-fade-left">
+            <div
+                class=" bg-green-100 text-green-800 px-4 py-3 rounded-lg shadow-lg flex items-center border-2 border-green-700 gap-3">
+                <span class="scale-150">✅</span>
+                <div class="flex flex-col">
+                    <span class="text-lg font-bold">Berhasil</span>
+                    <span class="text-sm">{{ session('success') }}</span>
+                </div>
+                <button class="ml-auto text-green-700 font-bold"
+                    onclick="this.parentElement.style.display='none'">✕</button>
+            </div>
+        </div>
+    @endif
+    {{-- Menu --}}
+    <div class="p-4 flex flex-wrap justify-center gap-4 pt-32">
         <a href="#" id="openModal">
             <div class="text-sky-900 bg-gray-200 w-48 h-48 rounded-md shadow-lg  justify-items-center py-10">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-16">
@@ -68,13 +89,93 @@
             </div>
         </a>
     </div>
-    <a href="/Logout" class="">
-        <div class="px-5 flex justify-center">
-            <div
-                class="bg-red-700 p-1 px-10 shadow-lg text-white text-xl font-semibold rounded-md outline outline-3 outline-red-700 text-center">
-                Logout</div>
+    <div class="">
+        {{-- Data Anak Posyandu --}}
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
+            <div class="lg:flex items-center justify-between gap-4 mb-4">
+                <h2 class="text-xl font-semibold text-sky-900">
+                    Data Anak Posyandu {{ optional(auth()->user()->posyandu)->nama ?? '-' }}
+                </h2>
+
+                <form method="GET" action="{{ url('/dashboard1') }}" class="w-full sm:w-80">
+                    <label for="q" class="sr-only">Cari Anak</label>
+                    <div class="relative">
+                        <input type="text" id="q" name="q" value="{{ $search ?? '' }}"
+                            placeholder="Cari nama / NIK…"
+                            class="w-full rounded-md border border-gray-300 px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-cyan-600" />
+                        <button type="submit" class="absolute inset-y-0 right-0 px-3 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="size-5 text-gray-500" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="m21 21-4.35-4.35m1.35-4.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="bg-white rounded-lg shadow ring-1 ring-black/5 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr class="text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                <th class="px-4 py-3">NO</th>
+                                <th class="px-4 py-3">NIK</th>
+                                <th class="px-4 py-3">Nama</th>
+                                <th class="px-4 py-3">Jenis Kelamin</th>
+                                <th class="px-4 py-3">Tanggal Lahir</th>
+                                <th class="px-4 py-3">Umur (bulan)</th>
+                                <th class="px-4 py-3">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100 bg-white">
+                            @forelse ($anak as $a)
+                                @php
+                                    $umurBulan = \Carbon\Carbon::parse($a->tanggal_lahir)->diffInMonths(now());
+                                @endphp
+                                <tr class="text-sm text-gray-700">
+                                    <td class="px-4 py-3">{{ $loop->iteration + ($anak->currentPage() - 1) * $anak->perPage(5)  }}</td>
+                                    <td class="px-4 py-3 whitespace-nowrap font-mono">{{ $a->nik }}</td>
+                                    <td class="px-4 py-3">{{ $a->nama }}</td>
+                                    <td class="px-4 py-3">
+                                        {{ $a->kelamin === 'L' ? 'Laki-laki' : ($a->kelamin === 'P' ? 'Perempuan' : $a->kelamin) }}
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        {{ \Carbon\Carbon::parse($a->tanggal_lahir)->translatedFormat('d M Y') }}
+                                    </td>
+                                    <td class="px-4 py-3">{{ $umurBulan }}</td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <a href="{{ route('kader.anak.edit', $a) }}"
+                                            class="text-cyan-600 hover:underline mr-2">Edit</a>
+                                        <form action="{{ route('kader.anak.destroy', $a) }}" method="POST"
+                                            class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 hover:underline"
+                                                onclick="return confirm('Yakin ingin menghapus data anak ini?')">Hapus</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="px-4 py-6 text-center text-gray-500">
+                                        Belum ada data anak terdaftar pada posyandu ini.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                {{-- Pagination --}}
+                <div class="p-4">
+                    {{ $anak->links() }}
+                </div>
+            </div>
         </div>
-    </a>
+    </div>
+
+
     {{-- Modal --}}
     <div id="modal" class="fixed inset-0 flex  items-center justify-center bg-gray-900 bg-opacity-50 hidden">
         <div class="bg-slate-200 w-72 rounded-md relative animate-jump-in">

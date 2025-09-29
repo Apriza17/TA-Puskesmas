@@ -9,17 +9,84 @@ use App\Models\Anak;
 use App\Models\Bumil;
 use App\Models\Pesan;
 use Illuminate\Support\Carbon;
+use Illuminate\Validation\Rule;
 use App\Models\LaporanAnak;
 use App\Models\LaporanBulananPosyandu;
 use App\Notifications\TambahNotifikasi;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\LaporanWorkbookImport;
+use App\Imports\LaporanBulanImport;
 
 class KaderController extends Controller
 {
-    public function index(){
-        $user = Auth::User();
-        return view('Kader.Dash',compact('user'));
+    public function index(Request $request)
+    {
+        $user = Auth::user();
+        $posyanduId = $user->posyandu_id ?? optional($user->posyandu)->id;
+
+        // Query dasar: anak pada posyandu kader
+        $query = Anak::where('posyandu_id', $posyanduId);
+
+        // Pencarian opsional (nama / NIK)
+        if ($search = $request->input('q')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                ->orWhere('nik', 'like', "%{$search}%");
+            });
+        }
+
+        // Urutkan dan paginate
+        $anak = $query->orderBy('nama')->paginate(5)->withQueryString();
+
+        return view('Kader.Dash', compact('user','anak', 'search'));
     }
+
+    public function edit(Anak $anak)
+{
+    // Batasi hanya anak dari posyandu kader yang login
+    $this->authorizeAnakForKader($anak);
+
+    return view('Kader.AnakEdit', compact('anak'));
+}
+
+    public function update(Request $request, Anak $anak)
+    {
+        $this->authorizeAnakForKader($anak);
+
+        $validated = $request->validate([
+            'nik'           => ['required', 'string', 'max:32', Rule::unique('anak', 'nik')->ignore($anak->id)],
+            'nama'          => ['required', 'string', 'max:100'],
+            'kelamin'       => ['required', Rule::in(['L','P'])],
+            'tanggal_lahir' => ['required', 'date'],
+            'berat_lahir'   => ['required', 'numeric', 'min:0'],
+            'tinggi_lahir'  => ['required', 'numeric', 'min:0'],
+        ]);
+
+        $anak->update($validated);
+
+        return redirect('/dashboard1')->with('success', 'Data anak berhasil diperbarui.');
+    }
+
+    public function destroy(Anak $anak)
+    {
+        $this->authorizeAnakForKader($anak);
+
+        $anak->delete();
+
+        return redirect('/dashboard1')->with('success', 'Data anak berhasil dihapus.');
+    }
+
+    protected function authorizeAnakForKader(Anak $anak)
+    {
+        $user = Auth::user();
+        $posyanduId = $user->posyandu_id ?? optional($user->posyandu)->id;
+
+        if ($anak->posyandu_id !== $posyanduId) {
+            abort(403, 'Anda tidak berhak mengakses data anak dari posyandu lain.');
+        }
+    }
+
 
     public function viewRegis(){
         $posyandu = Posyandu::all();
@@ -82,36 +149,43 @@ class KaderController extends Controller
 
     }
 
-    public function viewLaporan(Request $request)
+   public function viewLaporan(Request $request)
     {
         $user = auth()->user();
-        $bulanDipilih = $request->input('bulan_laporan')
-            ? Carbon::parse($request->input('bulan_laporan'))->startOfMonth()
-            : Carbon::now()->startOfMonth();
 
-        // Ambil semua anak dari posyandu kader
-        $anakPosyandu = Anak::where('posyandu_id', $user->posyandu_id)->get();
+        // Gunakan DATE, default hari ini
+        $tanggalDipilih = $request->filled('tanggal_laporan')
+            ? \Carbon\Carbon::parse($request->input('tanggal_laporan'))->startOfDay()
+            : now()->startOfDay();
 
-        // Ambil anak yang belum dilaporkan di bulan yang dipilih
-        $anakList = $anakPosyandu->filter(function ($anak) use ($bulanDipilih) {
-            return !$anak->laporanBulanan()
-                ->where('tanggal_pemeriksaan', '>=', $bulanDipilih->toDateString())
-                ->where('tanggal_pemeriksaan', '<', $bulanDipilih->copy()->addMonth()->toDateString())
-                ->exists();
-        });
+        $start = $tanggalDipilih->copy()->startOfMonth();
+        $end   = $tanggalDipilih->copy()->endOfMonth();
 
-        // Cek apakah bulan ini sudah dilaporkan
-        $laporanBulanIni = LaporanBulananPosyandu::where('posyandu_id', $user->posyandu_id)
-            ->where('tanggal_laporan', $bulanDipilih->toDateString())
-            ->first();
+        // Anak eligible = sudah lahir pada tanggal pemeriksaan tsb
+        $eligibleIds = \App\Models\Anak::where('posyandu_id', $user->posyandu_id)
+            ->whereDate('tanggal_lahir', '<=', $tanggalDipilih->toDateString())
+            ->orderBy('nama')
+            ->pluck('id');
 
-        $totalAnak = $anakPosyandu->count();
-        $totalDilaporkan = LaporanAnak::whereIn('anak_id', $anakPosyandu->pluck('id'))
-            ->whereMonth('tanggal_pemeriksaan', $bulanDipilih->month)
-            ->whereYear('tanggal_pemeriksaan', $bulanDipilih->year)
+        // Yang tampil di SELECT = eligible & belum dilaporkan di bulan itu
+        $anakList = \App\Models\Anak::whereIn('id', $eligibleIds)
+            ->whereDoesntHave('laporanBulanan', function ($q) use ($start, $end) {
+                $q->whereBetween('tanggal_pemeriksaan', [$start->toDateString(), $end->toDateString()]);
+            })
+            ->orderBy('nama')
+            ->get();
+
+        // Rekap pakai denominator "eligible"
+        $totalAnak       = $eligibleIds->count();
+        $totalDilaporkan = \App\Models\LaporanAnak::whereIn('anak_id', $eligibleIds)
+            ->whereBetween('tanggal_pemeriksaan', [$start->toDateString(), $end->toDateString()])
             ->count();
 
-        return view('Kader.Laporan', compact('anakList', 'bulanDipilih', 'laporanBulanIni','totalAnak','totalDilaporkan'));
+        $laporanBulanIni = \App\Models\LaporanBulananPosyandu::where('posyandu_id', $user->posyandu_id)
+            ->whereDate('tanggal_laporan', $start->toDateString())
+            ->first();
+
+        return view('Kader.Laporan', compact('anakList','tanggalDipilih','laporanBulanIni','totalAnak','totalDilaporkan'));
     }
 
     public function simpanLaporan(Request $request)
@@ -150,6 +224,23 @@ class KaderController extends Controller
         );
         return redirect('/Laporan-anak')->with('success', 'Laporan berhasil disimpan!');
     }
+
+      public function import(Request $request)
+    {
+        $request->validate([
+            'file' => ['required','file','mimes:xlsx,xls,csv','max:20480'], // 20MB
+        ]);
+
+        $import = new LaporanWorkbookImport($request->user()); // kirim user kader
+        Excel::import($import, $request->file('file'));
+
+        // ringkasan hasil
+        $msg = "Import selesai. Berhasil: {$import->successCount}, Duplikat: {$import->duplicateCount}, " .
+               "Skipped (bukan posyandu / NIK tidak cocok / tanggal invalid): {$import->skipCount}, " .
+               "Error: {$import->errorCount}.";
+        return back()->with('success', $msg);
+    }
+
 
     public function viewPesan()
     {

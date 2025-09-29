@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Data Sartika</title>
     <link rel="icon" href="{{ asset('img/logo.png') }}">
     @vite('resources/css/app.css')
 </head>
@@ -20,34 +20,52 @@
         <div class="lg:px-52 md:px-28 text-white -translate-y-24">
             <div>
                 <h1 class="text-3xl font-bold mb-2 ">Data Sartika</h1>
-                <p class="font-thin mb-16">Berikut merupakan tabel yang berisikan Data dari tiap Posyandu</p>
+                <p class="font-thin mb-14">Berikut merupakan tabel yang berisikan Data dari tiap Posyandu</p>
             </div>
-            <div class="flex justify-between">
-                <button onclick="openModal()"
-                    class="bg-cyan-600 hover:bg-cyan-800 p-1 px-3 text-center font-semibold text-sm outline outline-2 drop-shadow-md rounded-sm scale-100 hover:scale-105 transition ease-in-out duration-100">
-                    Tambah
-                </button>
-                <div class="flex gap-3">
-                    <a href="">
-                        <div
-                            class="bg-orange-400 hover:bg-orange-500 p-1 px-3 text-center font-semibold text-sm outline outline-2 drop-shadow-md rounded-sm scale-100 hover:scale-105 transition ease-in-out duration-100">
-                            Import
-                        </div>
-                    </a>
-                    <a href="">
-                        <div
-                            class="bg-orange-400 hover:bg-orange-500 p-1 px-3 text-center font-semibold text-sm outline outline-2 drop-shadow-md rounded-sm scale-100 hover:scale-105 transition ease-in-out duration-100">
-                            Eksport
-                        </div>
-                    </a>
-                </div>
-            </div>
+
         </div>
     </div>
     {{-- Section --}}
+    <div class="mx-auto px-5 lg:px-10 xl:px-52 -mt-24 pb-10">
+        {{-- tombol --}}
+        <div class="flex justify-between">
+            <button onclick="openModal()"
+                class="bg-cyan-600 hover:bg-cyan-800 p-1 px-3 text-center font-semibold text-sm border-2 border-white text-white drop-shadow-md rounded-sm scale-100 hover:scale-105 transition ease-in-out duration-100">
+                Tambah
+            </button>
+            <div class="flex gap-3">
+                <div class="bg-gray-200 p-2 rounded-md">
+                    <form action="{{ route('sartika.import') }}" method="POST" enctype="multipart/form-data"
+                        class="flex items-center gap-3">
+                        @csrf
+                        <input type="file" name="file" accept=".xlsx,.xls,.csv"
+                            class="block w-full text-sm text-black" required>
+                        <button type="submit"
+                            class="bg-orange-600 hover:bg-orange-800 p-1 px-3 text-center font-semibold text-sm border-2 border-white text-white drop-shadow-md rounded-sm scale-100 hover:scale-105 transition ease-in-out duration-100">
+                            Import
+                        </button>
+                    </form>
 
-    <div class="lg:px-52 md:px-28">
-        <div class="w-full bg-white p-2 mt-5  animate-fade-up animate-once animate-duration-1000 animate-ease-out">
+                    @if (session('success'))
+                        <div class="mt-4 rounded-md border border-emerald-200 bg-emerald-50 p-3 text-emerald-800">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if ($errors->any())
+                        <div class="mt-4 rounded-md border border-rose-200 bg-rose-50 p-3 text-rose-800">
+                            <ul class="list-disc pl-5">
+                                @foreach ($errors->all() as $e)
+                                    <li>{{ $e }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+        <div
+            class="w-full bg-white p-2 mt-5 rounded-lg shadow-lg  animate-fade-up animate-once animate-duration-1000 animate-ease-out">
             <table class="w-full">
                 <tr class="border-b-2 border-slate-500">
                     <th class="py-2">No.</th>
@@ -66,7 +84,8 @@
                         <td>{{ $p->anak->count() }}</td>
                         <td>{{ $p->bumil->count() }}</td>
                         <td class="flex justify-center gap-2">
-                            <a href="/Data-Sartika/{{ $p->id }}/edit" class="bg-orange-300 hover:bg-orange-800 mt-2 p-1 rounded-sm text-orange-600 scale-100 peer hover:scale-105 transition ease-in-out duration-150">
+                            <a href="/Data-Sartika/{{ $p->id }}/edit"
+                                class="bg-orange-300 hover:bg-orange-800 mt-2 p-1 rounded-sm text-orange-600 scale-100 peer hover:scale-105 transition ease-in-out duration-150">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                     class="size-5">
                                     <path

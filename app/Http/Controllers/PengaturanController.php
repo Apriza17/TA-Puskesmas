@@ -13,6 +13,18 @@ class PengaturanController extends Controller
         return view ('Pengaturan');
     }
 
+    public function templateIMT()
+    {
+        $filePath = storage_path('app/templates/Format_IMT.xlsx');
+        return response()->download($filePath, 'Format_IMT.xlsx');
+    }
+
+    public function templates()
+    {
+        $filePath = storage_path('app/templates/Format_Posyandu & Anak.xlsx');
+        return response()->download($filePath, 'Format_Posyandu & Anak.xlsx');
+    }
+
     public function import(Request $request)
     {
         $request->validate([
@@ -23,4 +35,5 @@ class PengaturanController extends Controller
 
         return redirect()->route('stunting.import.form')->with('success', 'Data berhasil diimport!');
     }
+
 }

@@ -59,7 +59,7 @@ class AuthController extends Controller
             }
 
         }else{
-            return redirect('/')->withErrors('Email atau Password salah!')->withInput();
+            return back()->withErrors('Login Gagal ! Silahkan Cek Kembali Username dan Password Anda');
         }
 
     }

@@ -47,9 +47,9 @@
                 <label for="" class="font-semibold">Posyandu</label>
                 <br>
                 <select name="posyandu_id" class="w-full italic font-thin" id="">
-                    <option value="" class=" font-normal">Pilih posyandu</option>
+                    <option value="" class=" font-normal ">Pilih posyandu</option>
                     @foreach ($posyandu as $p)
-                        <option value="{{ $p->id }}">{{ $p->nama }}</option>
+                        <option class="" value="{{ $p->id }}">{{ $p->nama }}</option>
                     @endforeach
 
                 </select>

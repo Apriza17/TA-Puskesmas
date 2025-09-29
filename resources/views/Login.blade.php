@@ -1,78 +1,176 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     @vite('resources/css/app.css')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="icon" href="{{ asset('img/logo.png') }}">
-    <title>Selamat Datang|Masuk</title>
+    <title>Selamat Datang | Masuk</title>
 </head>
 
-<body class="bg-cyan-600 lg:flex lg:h-screen">
-    <div class="bg-gradient-to-t relative from-gray-700 to-cyan-600 h-28 lg:h-full lg:w-1/2">
-        <div class="">
-            <div class="">
-                <img src="/img/edge dec1.png" class="w-64" alt="">
-            </div>
-            <div class="lg:flex lg:justify-center lg:align-middle animate-fade-right animate-once animate-ease-in-out">
-                <div class="hidden lg:block">
-                    <p class="font-bold text-3xl text-white text-center">Selamat Datang </p>
-                    <img src="/img/logo.png" alt="" class="w-52 mx-auto my-4">
-                    <p class="text-center text-white">Website ini merupakan sebuah media untuk mengetahui sebuah
-                        informasi <br>
-                        tentang
-                        stunting daerah kerja puskesmas</p>
+{{-- SweetAlert untuk login gagal --}}
+@if ($errors->any())
+    <div class="bg-gray-900/70 fixed inset-0 flex items-center justify-center z-50 ">
+        <div class="bg-white rounded-lg p-6 shadow-lg animate-jump-in duration-100">
+            <p class="text-2xl font-bold text-center">Login Gagal</p>
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-24 mx-auto text-red-600" width="24" height="24"
+                viewBox="0 0 24 24">
+                <path fill="currentColor"
+                    d="M12.884 2.532c-.346-.654-1.422-.654-1.768 0l-9 17A1 1 0 0 0 3 21h18a.998.998 0 0 0 .883-1.467zM13 18h-2v-2h2zm-2-4V9h2l.001 5z" />
+            </svg>
+            <p class="mt-3 text-center">Silahkan Cek Kembali Username dan Password Anda</p>
+            <a href="/"
+                class="bg-gradient-to-r text-center max-w-28 from-sky-900 to-cyan-600 text-white px-4 py-2 mt-4 rounded-md mx-auto block hover:scale-105 transition transform duration-200 ease-in-out">Kembali</a>
+
+        </div>
+    </div>
+@endif
+
+<body
+    class="min-h-screen bg-gradient-to-br from-blue-900 via-blue-700 to-cyan-600 flex items-center justify-center py-10">
+
+    {{-- WRAPPER CARD --}}
+    <div class="w-full max-w-6xl px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 rounded-3xl shadow-2xl overflow-hidden bg-white/90 backdrop-blur">
+            {{-- LEFT: WELCOME PANEL --}}
+            <div class="relative bg-gradient-to-br from-cyan-700 to-blue-800 text-white p-8 lg:p-12">
+                {{-- subtle pattern --}}
+                <div
+                    class="pointer-events-none absolute inset-0 opacity-25
+                    bg-[radial-gradient(ellipse_at_top_left,white_0%,transparent_35%),radial-gradient(ellipse_at_bottom_right,white_0%,transparent_35%)]">
+                </div>
+
+                <div class="relative z-10 h-full flex flex-col">
+                    <div class="flex items-center gap-3">
+                        <img src="{{ asset('img/logo.png') }}" alt="Logo"
+                            class="w-12 h-12 rounded-full ring-2 ring-white/40">
+                        <div class="text-lg font-semibold tracking-wide">Puskesmas Gunung Sari Ulu</div>
+                    </div>
+
+                    <div class="mt-10">
+                        <h1 class="text-4xl lg:text-5xl font-extrabold leading-tight drop-shadow">
+                            Halo, selamat datang!
+                        </h1>
+                        <p class="mt-4 text-white/85 leading-relaxed">
+                            Website ini merupakan media monitoring dan pelaporan stunting wilayah kerja puskesmas.
+                            Silakan masuk untuk melanjutkan.
+                        </p>
+                    </div>
+
+                    <div class="mt-auto hidden lg:block">
+                        <img src="{{ asset('img/img1.png') }}" alt="" class="w-40 opacity-95 drop-shadow-lg">
+                    </div>
+
+                    {{-- dekorasi lama tetap dipakai sebagai aksen --}}
+
                 </div>
             </div>
-            <div class=" absolute bottom-0 right-0 invisible lg:visible">
-                <img src="/img/edge dec2.png" class="w-64" alt="">
+
+            {{-- RIGHT: FORM PANEL --}}
+            <div class="bg-white p-8 lg:p-12">
+                <div class="max-w-md mx-auto">
+                    <h2 class="text-2xl font-bold text-sky-900">Masuk</h2>
+                    <p class="text-slate-600 mt-1">Masukkan username dan password Anda.</p>
+
+                    <form method="POST" action="{{ route('prosesLogin') }}" class="mt-8 space-y-5">
+                        @csrf
+
+                        {{-- USERNAME --}}
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-slate-700">Username</label>
+                            <div class="mt-1 relative">
+                                <input type="text" id="name" name="name" value="{{ old('name') }}"
+                                    class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 pr-10 text-slate-900 placeholder-slate-400
+                                           focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent
+                                           @error('name') ring-2 ring-rose-500 border-transparent @enderror"
+                                    placeholder="Masukkan username">
+                                <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                        d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.5 20.1a7.5 7.5 0 0 1 15 0V21H4.5v-.9Z" />
+                                </svg>
+                            </div>
+                            @error('name')
+                                <p class="mt-1 text-sm text-rose-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        {{-- PASSWORD --}}
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-slate-700">Password</label>
+                            <div class="mt-1 relative">
+                                <input type="password" id="password" name="password"
+                                    class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 pr-10 text-slate-900 placeholder-slate-400
+                                           focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent
+                                           @error('password') ring-2 ring-rose-500 border-transparent @enderror"
+                                    placeholder="Masukkan password">
+                                <button type="button" id="togglePass"
+                                    class="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-slate-400 hover:text-slate-600">
+                                    {{-- eye icon --}}
+                                    <svg id="eyeOpen" class="w-5 h-5" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M2.036 12.322a1 1 0 0 1 0-.644C3.423 7.51 7.36 5 12 5s8.577 2.51 9.964 6.678a1 1 0 0 1 0 .644C20.577 16.49 16.64 19 12 19s-8.577-2.51-9.964-6.678Z" />
+                                        <circle cx="12" cy="12" r="3" stroke-width="1.5" />
+                                    </svg>
+                                </button>
+                            </div>
+                            @error('password')
+                                <p class="mt-1 text-sm text-rose-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        {{-- OPTIONS --}}
+                        <div class="flex items-center justify-between">
+                            <label class="inline-flex items-center gap-2 text-sm text-slate-600 select-none">
+                                <input type="checkbox" name="remember"
+                                    class="rounded border-slate-300 text-cyan-600 focus:ring-cyan-600">
+                                Ingat saya
+                            </label>
+                            {{-- ganti href jika sudah ada route lupa password --}}
+                            <a href="#" class="text-sm font-medium text-cyan-700 hover:text-cyan-800">Lupa
+                                password?</a>
+                        </div>
+
+                        {{-- SUBMIT --}}
+                        <button type="submit"
+                            class="w-full rounded-2xl bg-gradient-to-r from-sky-900 to-cyan-600 text-white py-3 font-semibold
+                                       shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5">
+                            Masuk
+                        </button>
+
+                        {{-- SIGN UP --}}
+                        <div class="text-center pt-2">
+                            <p class="text-sm text-slate-600">Belum punya akun?</p>
+                            <a href="/register"
+                                class="mt-2 inline-flex w-full items-center justify-center rounded-2xl bg-white text-sky-900 font-semibold py-3
+                                      ring-1 ring-sky-900/80 hover:bg-sky-50 transition">
+                                Daftar
+                            </a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="bg-white w-full lg:w-1/2 lg: py-16 lg:px-10 lg:content-center z-10">
-        <p class="text-3xl font-bold text-sky-900 text-center lg:text-left ">Masuk</p>
-        <p class="text-md text-sky-900 text-center lg:text-left ">Masukan Username dan Password anda !</p>
-        <div class="">
-            <form method="POST" action="{{ route('prosesLogin') }}" class="font text-sky-900 mt-6 px-24 lg:px-0">
-                @csrf
-                <label for="" class="font-semibold">Username</label>
-                <br>
-                <input type="text" name="name" id="" class="w-full placeholder:italic font-thin"
-                    placeholder="Masukan disini">
-                <div class="h-1 bg-cyan-600 rounded-lg "></div>
-                @error('name')
-                    <p class="text-red-500 font-normal text-sm mb-3">{{ $message }}</p>
-                @enderror
-                <label for="" class="font-semibold">Password</label>
-                <br>
-                <input type="password" name="password" id="" class="w-full placeholder:italic font-thin"
-                    placeholder="Masukan disini">
-                <div class="h-1 bg-cyan-600 rounded-lg"></div>
-                @error('password')
-                    <p class="text-red-500 font-normal text-sm">{{ $message }}</p>
-                @enderror
-                <button type="submit"
-                    class="w-full bg-sky-900 rounded-2xl text-white py-1 font-semibold mt-6 scale-100 hover:scale-105 transition ease-in-out duration-200">Masuk</button>
-                <a href="/register"
-                    class="w-full block text-center invisible md:visible outline outline-sky-900 rounded-2xl text-sky-900 py-1 font-semibold mt-2 scale-100 hover:scale-105 transition ease-in-out duration-200">Daftar</a>
-                <p class="text-xs mt-1 text-center opacity-70 invisible md:visible">Silahkan Klik "Daftar" untuk membuat
-                    akun!</p>
 
-            </form>
-        </div>
-    </div>
-    <div class="bg-gradient-to-t from-cyan-600 to-gray-700 relative h-40 lg:hidden">
-        <img src="/img/edge dec2.png" class="w-64 absolute right-0 bottom-0" alt="">
+        {{-- small footer note --}}
+        <p class="mt-6 text-center text-xs text-white/70">
+            © {{ date('Y') }} Puskesmas Gunung Sari Ulu — Sistem Informasi Monitoring Stunting
+        </p>
     </div>
 
-</body>
-@if ($message = Session::get('failed'))
+
+    {{-- Toggle show/hide password --}}
     <script>
-        Swal.fire("Email atau Password salah");
+        const btn = document.getElementById('togglePass');
+        const input = document.getElementById('password');
+        btn?.addEventListener('click', () => {
+            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+            input.setAttribute('type', type);
+        });
     </script>
-@endif
+</body>
 
 </html>

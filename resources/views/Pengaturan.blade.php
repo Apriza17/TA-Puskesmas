@@ -28,8 +28,31 @@
         </div>
     </div>
     {{-- section --}}
+    <div class="lg:px-52 md:px-28 pt-5 flex justify-center gap-2">
+        <div class="bg-white rounded-md drop-shadow-lg px-2 py-4 w-1/2">
+            <p class="text-lg font-bold text-sky-900">Unduh Template IMT (tinggi badan)</p>
+            <p class=" font-light mb-2 ">Klik tombol untuk mengunduh template</p>
+            <div>
+                <a href="{{ route('stunting.template') }}"
+                    class="rounded-md bg-green-700 px-4 py-2 text-white hover:bg-green-900">
+                    Unduh Template
+                </a>
+            </div>
+        </div>
+        <div class="bg-white rounded-md drop-shadow-lg px-2 py-4 w-1/2">
+            <p class="text-lg font-bold text-sky-900">Unduh Template Excel Data Posyandu & Anak</p>
+            <p class=" font-light mb-2 ">Klik tombol untuk mengunduh template</p>
+            <div>
+                <a href="{{ route('sartika.template') }}"
+                    class="rounded-md bg-green-700 px-4 py-2 text-white hover:bg-green-900">
+                    Unduh Template
+                </a>
+            </div>
+        </div>
+
+    </div>
     <div class="lg:px-52 md:px-28 pt-5">
-        <div class="bg-white rounded-sm drop-shadow-lg p-2">
+        <div class="bg-white rounded-md drop-shadow-lg px-2 py-4">
             <p class="text-lg font-bold text-sky-900">Masukan Standar Stunting </p>
             <p class=" font-light mb-2 ">Siapkan excel yang berisi tabel IMT Tinggi Badan (TB)</p>
             <div>

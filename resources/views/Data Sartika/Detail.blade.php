@@ -9,10 +9,14 @@
     @vite('resources/css/app.css')
     <link rel="icon" href="{{ asset('img/logo.png') }}">
 </head>
-@include('Layout.Navbar')
 
 <body class="bg-slate-300">
-    <div class="bg-gradient-to-t from-gray-700 to-cyan-600 h-60 w-full shadow-md">
+
+    <div class=" relative bg-gradient-to-t from-gray-700 to-cyan-600 h-60 w-full shadow-md">
+        <div
+            class="absolute top-0 left-0 text-white bg-red-600/80 hover:bg-red-800 rounded-br-2xl px-5 py-3 font-semibold no-print z-10">
+            <a href="/Laporan">Kembali</a>
+        </div>
         <div class="flex justify-between">
             <img src="img/edge dec1.png" alt="" class="size-40 invisible">
             <img src="img/edge dec1.png" alt="" class="size-40 rotate-90 invisible">
@@ -22,26 +26,13 @@
                 <h1 class="text-3xl font-bold mb-2 ">Detail Sartika</h1>
                 <p class="font-thin mb-16">Berikut merupakan tabel yang berisikan Data anak dan ibu hamil Posyandu</p>
             </div>
-            <div class="flex justify-between">
-                <a href="/Data-Sartika">
-                    <div
-                        class="bg-cyan-600 hover:bg-cyan-700 p-1 px-3 text-center font-semibold text-sm outline outline-2 drop-shadow-md rounded-sm scale-100 hover:scale-105 transition ease-in-out duration-100">
-                        Tambah
-                    </div>
-                </a>
-                <a href="/Data-Sartika">
-                    <div
-                        class="bg-red-600 hover:bg-red-700 p-1 px-3 text-center font-semibold text-sm outline outline-2 drop-shadow-md rounded-sm scale-100 hover:scale-105 transition ease-in-out duration-100">
-                        Kembali
-                    </div>
-                </a>
-            </div>
         </div>
     </div>
     {{-- Section --}}
 
-    <div class="lg:px-52 md:px-28">
-        <div class="w-full bg-white p-2 mt-5 animate-fade-up animate-once animate-duration-1000 animate-ease-out ">
+    <div class="mx-auto px-5 lg:px-10 xl:px-52 -mt-20 pb-10">
+        <div
+            class="w-full bg-white rounded-xl shadow-lg p-2 mt-5 animate-fade-up animate-once animate-duration-1000 animate-ease-out ">
             <p class="mb-3 font-semibold text-xl text-sky-900">Data Anak</p>
             @if ($posyandu->anak->isEmpty())
                 <div class="flex justify-center mb-5">

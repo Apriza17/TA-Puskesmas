@@ -30,22 +30,15 @@
     {{-- Notifikasi --}}
     @if (session('success'))
         <div class="absolute right-0 z-10 top-5 animate-fade-left">
-            <div
-                class="bg-slate-100 h-16 flex items-center justify-start rounded-l-md shadow-lg outline outline-2 outline-green-800">
-                <div class="bg-gradient-to-t from-green-700 to-emerald-500 w-2 h-full rounded-l-md"></div>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                    class="size-10 text-green-600 ml-5">
-                    <path fill-rule="evenodd"
-                        d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
-                        clip-rule="evenodd" />
-                </svg>
-                <div class="px-5">
-                    <p class="text-green-800 font-semibold">Berhasil !</p>
-                    <p class="font-thin text-sm">{{ session('success') }}</p>
+           <div
+                class=" bg-green-100 text-green-800 px-4 py-3 rounded-lg shadow-lg flex items-center border-2 border-green-700 gap-3">
+                <span class="scale-150">✅</span>
+                <div class="flex flex-col">
+                    <span class="text-lg font-bold">Berhasil</span>
+                    <span class="text-sm">{{ session('success') }}</span>
                 </div>
-                <a href="/Regis-anak">
-                    <p class="text-xs pr-3">❌</p>
-                </a>
+                <button class="ml-auto text-green-700 font-bold"
+                    onclick="this.parentElement.style.display='none'">✕</button>
             </div>
         </div>
     @endif
@@ -84,7 +77,7 @@
                 <option value="P">Perempuan</option>
             </select>
             <div class="h-1 bg-cyan-600 rounded-lg mb-4 "></div>
-            @error('nama')
+            @error('kelamin')
                 <p class="text-red-500 font-normal text-sm mb-3">{{ $message }}</p>
             @enderror
             <label for="" class="font-semibold">NIK</label>
@@ -92,7 +85,7 @@
             <input type="text" name="nik" id="" class="w-full placeholder:italic font-thin"
                 placeholder="Masukan disini">
             <div class="h-1 bg-cyan-600 rounded-lg mb-4"></div>
-            @error('password')
+            @error('nik')
                 <p class="text-red-500 font-normal text-sm">{{ $message }}</p>
             @enderror
             <label for="" class="font-semibold">Tanggal Lahir</label>
@@ -100,7 +93,7 @@
             <input type="date" name="tanggal_lahir" id="" class="w-full placeholder:italic font-thin"
                 placeholder="Masukan disini">
             <div class="h-1 bg-cyan-600 rounded-lg mb-4"></div>
-            @error('password')
+            @error('tanggal_lahir')
                 <p class="text-red-500 font-normal text-sm">{{ $message }}</p>
             @enderror
             <label for="" class="font-semibold">Berat Lahir</label>

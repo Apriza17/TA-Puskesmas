@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Posyandu;
 use App\Models\User;
-
+use App\Imports\AnakPosyanduImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PosyanduController extends Controller
 {
@@ -53,5 +54,20 @@ class PosyanduController extends Controller
         $posyandu = Posyandu::findOrFail($id);
         $posyandu->delete();
         return redirect('/Data-Sartika')->with('success', 'Posyandu berhasil dihapus');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv,txt|max:20480',
+        ]);
+
+        $import = new AnakPosyanduImport();
+        Excel::import($import, $request->file('file'));
+
+        return back()->with(
+            'success',
+            "Import selesai: {$import->created} data baru, {$import->updated} diperbarui."
+        );
     }
 }
