@@ -12,13 +12,19 @@
 <body class="bg-slate-200">
 
     {{-- HERO --}}
-    <div class="bg-gradient-to-t from-gray-700 to-cyan-600 shadow fixed w-full z-10">
-        <div
-            class="absolute top-0 left-0 text-white bg-red-600/80 hover:bg-red-800 rounded-br-2xl px-5 py-3 font-semibold no-print z-10">
-            <a href="/dashboard1">Kembali</a>
-        </div>
-        <div class="max-w-5xl mx-auto px-5 py-6">
-            <h1 class="text-2xl font-bold text-white text-center">Laporan Anak</h1>
+    <div class="bg-gradient-to-r relative from-cyan-800 to-cyan-600 h-28 drop-shadow-lg overflow-hidden">
+        <div class="text-white font-semibold flex justify-center items-center h-full">
+            <img src="img/edge dec1.png" class="absolute z-0 size-56 right-0 rotate-90" alt="">
+            <div class="text-2xl">Laporan Bulanan Anak</div>
+            <a href="/dashboard1" class="absolute left-4">
+                <div class="">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-9">
+                        <path fill-rule="evenodd"
+                            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-4.28 9.22a.75.75 0 0 0 0 1.06l3 3a.75.75 0 1 0 1.06-1.06l-1.72-1.72h5.69a.75.75 0 0 0 0-1.5h-5.69l1.72-1.72a.75.75 0 0 0-1.06-1.06l-3 3Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </div>
+            </a>
         </div>
     </div>
 
@@ -32,7 +38,20 @@
                     <path fill="currentColor"
                         d="M512 64a448 448 0 1 1 0 896a448 448 0 0 1 0-896m-55.808 536.384l-99.52-99.584a38.4 38.4 0 1 0-54.336 54.336l126.72 126.72a38.27 38.27 0 0 0 54.336 0l262.4-262.464a38.4 38.4 0 1 0-54.272-54.336z" />
                 </svg>
-                <p class="mt-3 text-center">Data berhasil ditambahkan</p>
+                <p class="mt-3 text-center">Excel berhasil diimport!</p>
+                <a href="/Laporan-anak"
+                    class="bg-gradient-to-r text-center max-w-28 from-sky-900 to-cyan-600 text-white px-4 py-2 mt-4 rounded-md mx-auto block hover:scale-105 transition transform duration-200 ease-in-out">Kembali</a>
+
+            </div>
+        </div>
+    @endif
+    {{-- notif error --}}
+    @if (session('error'))
+        <div class="bg-gray-900/70 fixed inset-0 flex items-center justify-center z-50 ">
+            <div class="bg-white rounded-lg p-6 max-w-lg shadow-lg animate-jump-in duration-100">
+                <p class="text-2xl font-bold text-center mb-2">Gagal</p>
+                <svg xmlns="http://www.w3.org/2000/svg" class="size-24 mx-auto text-red-700" width="48" height="48" viewBox="0 0 48 48"><defs><mask id="SVGkgqorNOO"><g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"><path fill="#fff" stroke="#fff" d="M10 44h28a2 2 0 0 0 2-2V14H30V4H10a2 2 0 0 0-2 2v36a2 2 0 0 0 2 2"/><path stroke="#fff" d="m30 4l10 10"/><path stroke="#000" d="m18 22l12 12m0-12L18 34"/></g></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#SVGkgqorNOO)"/></svg>
+                <p class="mt-2 text-center">{{ session('error') }}</p>
                 <a href="/Laporan-anak"
                     class="bg-gradient-to-r text-center max-w-28 from-sky-900 to-cyan-600 text-white px-4 py-2 mt-4 rounded-md mx-auto block hover:scale-105 transition transform duration-200 ease-in-out">Kembali</a>
 
@@ -40,7 +59,8 @@
         </div>
     @endif
 
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pt-24">
+
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {{-- Alert sisa anak (opsional) --}}
         @isset($sisaBelumLapor)
             @if ($sisaBelumLapor > 0)

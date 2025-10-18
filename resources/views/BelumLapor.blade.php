@@ -28,11 +28,10 @@
                         {{ $tahun }}</strong>
                 </p>
             </div>
-
         </div>
     </div>
     {{-- section --}}
-    <div class="lg:px-52 md:px-28 py-5 mx-auto">
+    <div class="lg:px-52 md:px-28 py-5 mx-auto -mt-32">
         @if (session('success'))
             <div class="bg-green-100 text-green-800 p-3 rounded mb-4">
                 {{ session('success') }}
@@ -47,33 +46,64 @@
             <form method="POST" class="" action="{{ route('laporan.kirimPesanBelum') }}">
                 @csrf
                 <div class="flex justify-between">
-                    <p class="text-xl font-bold ">List Sartika</p>
+                    <div></div>
+                    <input type="hidden" name="periode"
+                        value="{{ $tahun }}-{{ str_pad($bulan, 2, '0', STR_PAD_LEFT) }}">
                     <button type="submit"
-                        class="mb-4 px-4 py-1 bg-orange-500 text-white font-semibold rounded-sm shadow hover:bg-orange-600">
+                        class="mb-2 px-4 py-1 bg-orange-500 text-white font-semibold rounded-md shadow cursor-pointer hover:bg-orange-600">
                         Kirim Pesan Pengingat
                     </button>
                 </div>
             </form>
 
-            <div class="overflow-x-auto">
-                <table class="min-w-full text-sm border border-gray-200 rounded shadow">
-                    <thead class="bg-white text-gray-700 font-semibold">
-                        <tr>
-                            <th class="px-4 py-2 text-left">No</th>
-                            <th class="px-4 py-2 text-left">Nama Posyandu</th>
-                            <th class="px-4 py-2 text-left">Jumlah Anak</th>
+            <div
+                class="w-full bg-white p-2 mt-2 rounded-lg shadow-lg  animate-fade-up animate-once animate-duration-1000 animate-ease-out">
+                <table class="w-full">
+                    {{-- header tabel --}}
+                    <tr class="border-b-2 border-slate-500">
+                        <th class="px-3 py-1">No</th>
+                        <th class="px-3 py-1 text-left">Nama Posyandu</th>
+                        <th class="px-3 py-1">Jumlah Anak</th>
+                        <th class="px-3 py-1">Status Pesan</th> {{-- NEW --}}
+                    </tr>
+
+                    {{-- body --}}
+                    @foreach ($belumMelapor as $i => $p)
+                        <tr class="border-b text-slate-700">
+                            <td class="text-center px-3 py-2">
+                                {{ $loop->iteration + ($belumMelapor->currentPage() - 1) * $belumMelapor->perPage(10) }}
+                            </td>
+                            <td class="px-3 py-2">{{ $p->nama }}</td>
+                            <td class="text-center px-3 py-2">{{ $p->anak->count() }}</td>
+                            <td class="text-center px-3 py-2">
+                                @php
+                                    $sent = !is_null($p->last_sent); // ada pesan terkirim di bulan ini?
+                                    $read = isset($p->any_read) ? (int) $p->any_read : 0; // 1 jika ada yang sudah terbaca
+                                @endphp
+
+                                @if (!$sent)
+                                    <span
+                                        class="inline-flex items-center rounded-full bg-orange-200 text-orange-700 text-xs px-2 py-0.5">
+                                        Belum dikirim
+                                    </span>
+                                @elseif ($read === 1)
+                                    <span
+                                        class="inline-flex items-center rounded-full bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5">
+                                        Terbaca
+                                    </span>
+                                @else
+                                    <span
+                                        class="inline-flex items-center rounded-full bg-yellow-100 text-yellow-700 text-xs px-2 py-0.5">
+                                        Dikirim (Belum dibaca)
+                                    </span>
+                                @endif
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody class="bg-white border-t-2 border-black">
-                        @foreach ($belumMelapor as $index => $posyandu)
-                            <tr class="">
-                                <td class="px-4 py-2">{{ $index + 1 }}</td>
-                                <td class="px-4 py-2">{{ $posyandu->nama }}</td>
-                                <td class="px-4 py-2">{{ $posyandu->anak->count() }} anak</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
+                    @endforeach
                 </table>
+            </div>
+            <div class="py-3">
+                {{ $belumMelapor->links() }}
             </div>
         @endif
     </div>

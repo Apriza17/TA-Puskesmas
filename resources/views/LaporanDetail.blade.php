@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laporan | Detail</title>
     @vite('resources/css/app.css')
+    <link rel="icon" href="{{ asset('img/favlogo.png') }}">
 </head>
 
 <body class="bg-slate-200">
@@ -98,7 +99,7 @@
                         ];
                     @endphp
 
-                   <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+                    <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
                         <h3 class="text-base sm:text-lg font-semibold text-slate-800">
                             Hasil Pengukuran Tahun {{ $tahun }}
                         </h3>
@@ -108,10 +109,12 @@
                             {{-- ketika paginate, withQueryString() sudah menjaga ?tahun ikut; di sini cukup set tahun --}}
                             <label class="text-sm text-slate-600">Tahun</label>
                             <select name="tahun" onchange="this.form.submit()"
-                                    class="rounded-md border-slate-300 text-sm px-2 py-1 focus:outline-none focus:ring-2 focus:ring-cyan-600">
-                            @for ($y = now()->year; $y >= now()->year - 6; $y--)
-                                <option value="{{ $y }}" {{ (int)request('tahun', $tahun) === $y ? 'selected' : '' }}>{{ $y }}</option>
-                            @endfor
+                                class="rounded-md border-slate-300 text-sm px-2 py-1 focus:outline-none focus:ring-2 focus:ring-cyan-600">
+                                @for ($y = now()->year; $y >= now()->year - 6; $y--)
+                                    <option value="{{ $y }}"
+                                        {{ (int) request('tahun', $tahun) === $y ? 'selected' : '' }}>{{ $y }}
+                                    </option>
+                                @endfor
                             </select>
                         </form>
                     </div>

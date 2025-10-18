@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @vite('resources/css/app.css')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="icon" href="{{ asset('img/logo.png') }}">
+    <link rel="icon" href="{{ asset('img/favlogo.png') }}">
     <title>Selamat Datang | Masuk</title>
 </head>
 
@@ -29,7 +29,7 @@
 @endif
 
 <body
-    class="min-h-screen bg-gradient-to-br from-blue-900 via-blue-700 to-cyan-600 flex items-center justify-center py-10">
+    class="min-h-screen bg-gradient-to-br from-blue-900 via-blue-300 to-cyan-900 flex items-center justify-center py-10">
 
     {{-- WRAPPER CARD --}}
     <div class="w-full max-w-6xl px-4">
@@ -43,13 +43,12 @@
                 </div>
 
                 <div class="relative z-10 h-full flex flex-col">
-                    <div class="flex items-center gap-3">
-                        <img src="{{ asset('img/logo.png') }}" alt="Logo"
-                            class="w-12 h-12 rounded-full ring-2 ring-white/40">
+                    <div class="">
+                        <img src="{{ asset('img/logo.png') }}" alt="Logo" class="w-40">
                         <div class="text-lg font-semibold tracking-wide">Puskesmas Gunung Sari Ulu</div>
                     </div>
 
-                    <div class="mt-10">
+                    <div class="mt-7">
                         <h1 class="text-4xl lg:text-5xl font-extrabold leading-tight drop-shadow">
                             Halo, selamat datang!
                         </h1>
@@ -124,13 +123,9 @@
 
                         {{-- OPTIONS --}}
                         <div class="flex items-center justify-between">
-                            <label class="inline-flex items-center gap-2 text-sm text-slate-600 select-none">
-                                <input type="checkbox" name="remember"
-                                    class="rounded border-slate-300 text-cyan-600 focus:ring-cyan-600">
-                                Ingat saya
-                            </label>
+                            <div></div>
                             {{-- ganti href jika sudah ada route lupa password --}}
-                            <a href="#" class="text-sm font-medium text-cyan-700 hover:text-cyan-800">Lupa
+                            <a href="/Lupa-password" class="text-sm font-medium text-cyan-700 hover:text-cyan-800">Lupa
                                 password?</a>
                         </div>
 
@@ -142,14 +137,14 @@
                         </button>
 
                         {{-- SIGN UP --}}
-                        <div class="text-center pt-2">
+                        {{-- <div class="text-center pt-2">
                             <p class="text-sm text-slate-600">Belum punya akun?</p>
                             <a href="/register"
                                 class="mt-2 inline-flex w-full items-center justify-center rounded-2xl bg-white text-sky-900 font-semibold py-3
                                       ring-1 ring-sky-900/80 hover:bg-sky-50 transition">
                                 Daftar
                             </a>
-                        </div>
+                        </div> --}}
                     </form>
                 </div>
             </div>

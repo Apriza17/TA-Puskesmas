@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     @vite('resources/css/app.css')
-    <link rel="icon" href="{{ asset('img/logo.png') }}">
+    <link rel="icon" href="{{ asset('img/favlogo.png') }}">
     <title>Beranda</title>
 </head>
 
@@ -18,10 +18,14 @@
                 <p class="">Selamat Datang</p>
                 <p class="text-xl">Posyandu {{ $user->name }}</p>
             </div>
-            <a href="/Logout" class="mt-5">
-                <div class="bg-red-500 p-1 hover:bg-red-900 rounded-sm">Keluar
-                </div>
-            </a>
+            <div class="z-20 mt-4">
+                <a href="/Logout" class="">
+                    <div class="bg-red-500 p-1 hover:bg-red-900 rounded-sm">Keluar</div>
+                </a>
+            </div>
+            <div class="z-0 absolute top-0 right-0 z-0">
+                <img src="img/edge dec2.png" class="-rotate-90 size-44 " alt="">
+            </div>
         </div>
 
     </div>
@@ -64,7 +68,7 @@
                 <p class=" text-lg">Pesan</p>
             </div>
         </a>
-        <a href="">
+        <a href="/Riwayat-laporan">
             <div class="text-sky-900 bg-gray-200 w-48 h-48 rounded-md shadow-lg  justify-items-center py-10">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-16">
                     <path fill-rule="evenodd"
@@ -76,7 +80,7 @@
                 <p class=" text-lg">Riwayat Laporan</p>
             </div>
         </a>
-        <a href="">
+        <a href="/Pengaturan">
             <div class="text-sky-900 bg-gray-200 w-48 h-48 rounded-md shadow-lg  justify-items-center py-10">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-16">
                     <path fill-rule="evenodd"
@@ -134,7 +138,8 @@
                                     $umurBulan = \Carbon\Carbon::parse($a->tanggal_lahir)->diffInMonths(now());
                                 @endphp
                                 <tr class="text-sm text-gray-700">
-                                    <td class="px-4 py-3">{{ $loop->iteration + ($anak->currentPage() - 1) * $anak->perPage(5)  }}</td>
+                                    <td class="px-4 py-3">
+                                        {{ $loop->iteration + ($anak->currentPage() - 1) * $anak->perPage(5) }}</td>
                                     <td class="px-4 py-3 whitespace-nowrap font-mono">{{ $a->nik }}</td>
                                     <td class="px-4 py-3">{{ $a->nama }}</td>
                                     <td class="px-4 py-3">

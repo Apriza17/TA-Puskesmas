@@ -90,7 +90,7 @@
                     <tr class=" text-sm font-normal text-slate-500">
                         <td class="max-w-5 text-center">{{ $loop->iteration }}</td>
                         <td>{{ $u->name }}</td>
-                        <td>{{ $u->posyandu->nama }}</td>
+                        <td>{{ $u->posyandu->nama ?? '-' }}</td>
                         <td>{{ $u->email }}</td>
                         <td class="text-center">
                             <button onclick="confirmDelete({{ $u->id }})"

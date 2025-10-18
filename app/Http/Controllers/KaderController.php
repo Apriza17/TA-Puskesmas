@@ -14,9 +14,13 @@ use App\Models\LaporanAnak;
 use App\Models\LaporanBulananPosyandu;
 use App\Notifications\TambahNotifikasi;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Exceptions\SheetNotFoundException;
+use Throwable;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\LaporanWorkbookImport;
 use App\Imports\LaporanBulanImport;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class KaderController extends Controller
 {
@@ -228,24 +232,153 @@ class KaderController extends Controller
       public function import(Request $request)
     {
         $request->validate([
-            'file' => ['required','file','mimes:xlsx,xls,csv','max:20480'], // 20MB
+            'file' => ['required','file','mimes:xlsx,xls,csv','max:20480'],
         ]);
 
-        $import = new LaporanWorkbookImport($request->user()); // kirim user kader
-        Excel::import($import, $request->file('file'));
+        try {
+            $import = new LaporanWorkbookImport($request->user());
+            Excel::import($import, $request->file('file'));
 
-        // ringkasan hasil
-        $msg = "Import selesai. Berhasil: {$import->successCount}, Duplikat: {$import->duplicateCount}, " .
-               "Skipped (bukan posyandu / NIK tidak cocok / tanggal invalid): {$import->skipCount}, " .
-               "Error: {$import->errorCount}.";
-        return back()->with('success', $msg);
+            $msg = "Import selesai. Berhasil: {$import->successCount}, Duplikat: {$import->duplicateCount}, "
+                . "Skipped: {$import->skipCount}, Error: {$import->errorCount}.";
+            return back()->with('success', $msg);
+
+        } catch (SheetNotFoundException $e) {
+            // mis. tidak ada sheet, sheet corrupt/tersembunyi, atau workbook kosong
+            return back()->with('error', 'File tidak memiliki sheet yang valid. Pastikan ada minimal satu sheet berisi data.');
+        } catch (\Throwable $e) {
+            report($e);
+            return back()->with('error', 'Gagal mengimpor: '.$e->getMessage());
+        }
     }
 
 
-    public function viewPesan()
+    public function viewPesan(Request $request)
     {
-        $pesan = auth()->user()->posyandu->pesan()->latest()->take(5)->get();
-        return view('Kader.Pesan', compact('pesan'));
+        $items = Pesan::where('posyandu_id', $request->user()->id)
+            ->latest('created_at')
+            ->paginate(5);
+
+        return view('Kader.Pesan', compact('items'));
+    }
+
+    public function showPesan(Pesan $pesan)
+    {
+       abort_unless($pesan->posyandu_id === auth()->id(), 403);
+        return view('Kader.Pesandetail', compact('pesan'));
+    }
+
+    public function markRead(Pesan $pesan)
+    {
+        abort_unless($pesan->posyandu_id === auth()->id(), 403);
+       if (!$pesan->terbaca) {
+            $pesan->update(['terbaca' => true]);
+        }
+        return back()->with('success','Pesan ditandai terbaca.');
+    }
+
+     public function riwayatLaporan(Request $request)
+    {
+        $user        = auth()->user();
+        $posyanduId  = $user->posyandu_id;
+
+        // filter bulan (opsional): ?periode=YYYY-MM
+        $periode = $request->query('periode');
+        $awal    = $periode ? Carbon::createFromFormat('Y-m', $periode)->startOfMonth() : null;
+        $akhir   = $awal ? $awal->copy()->endOfMonth() : null;
+
+        // subquery: hitung jumlah anak yang dilaporkan per bulan (distinct anak) untuk posyandu ini
+        $anakCountSub = LaporanAnak::join('anak', 'anak.id', '=', 'laporan_anak_bulanan.anak_id')
+            ->where('anak.posyandu_id', $posyanduId)
+            ->selectRaw('DATE_FORMAT(laporan_anak_bulanan.tanggal_pemeriksaan, "%Y-%m-01") AS bulan')
+            ->selectRaw('COUNT(DISTINCT laporan_anak_bulanan.anak_id) AS jml_anak')
+            ->groupBy('bulan');
+
+        $rows = LaporanBulananPosyandu::where('posyandu_id', $posyanduId)
+            ->when($awal && $akhir, function ($q) use ($awal, $akhir) {
+                $q->whereBetween('tanggal_laporan', [$awal->toDateString(), $akhir->toDateString()]);
+            })
+            ->leftJoinSub($anakCountSub, 'ac', function ($join) {
+                $join->on('laporan_bulanan_posyandu.tanggal_laporan', '=', 'ac.bulan');
+            })
+            ->select('laporan_bulanan_posyandu.*', DB::raw('COALESCE(ac.jml_anak,0) AS jml_anak'))
+            ->orderBy('tanggal_laporan', 'desc')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('Kader.RiwayatLaporan', [
+            'rows'    => $rows,
+            'periode' => $periode,
+        ]);
+    }
+
+    // DETAIL RIWAYAT untuk satu bulan
+    public function detailRiwayat($id)
+    {
+        $user       = auth()->user();
+        $posyanduId = $user->posyandu_id;
+
+        $bulanan = LaporanBulananPosyandu::where('id', $id)
+            ->where('posyandu_id', $posyanduId)   // pastikan milik posyandu kader
+            ->firstOrFail();
+
+        $awal  = Carbon::parse($bulanan->tanggal_laporan)->startOfMonth();
+        $akhir = Carbon::parse($bulanan->tanggal_laporan)->endOfMonth();
+
+        // ambil baris laporan anak bulan tsb (join anak utk nama/kelamin/nik)
+        $laporan = LaporanAnak::join('anak', 'anak.id', '=', 'laporan_anak_bulanan.anak_id')
+            ->where('anak.posyandu_id', $posyanduId)
+            ->whereBetween('laporan_anak_bulanan.tanggal_pemeriksaan', [$awal->toDateString(), $akhir->toDateString()])
+            ->orderBy('anak.nama')
+            ->select([
+                'laporan_anak_bulanan.*',
+                'anak.nama as nama_anak',
+                'anak.nik',
+                'anak.kelamin',
+                'anak.tanggal_lahir',
+            ])
+            ->get();
+
+        return view('Kader.DetailRiwayat', [
+            'bulanan' => $bulanan,
+            'awal'    => $awal,
+            'akhir'   => $akhir,
+            'laporan' => $laporan,
+        ]);
+    }
+
+
+
+
+    public function pengaturan()
+    {
+        return view('Kader.Pengaturan');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password'         => ['required', 'string', 'min:8', 'max:72', 'confirmed'],
+            'logout_others'    => ['nullable', 'boolean'],
+        ],[
+            'current_password.current_password' => 'Password saat ini tidak cocok.',
+        ]);
+
+        $user = $request->user();
+
+        // update password
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return back()->with('success', 'Password berhasil diperbarui.');
+    }
+
+    public function templateLaporan()
+    {
+        $filePath = storage_path('app/templates/Format_Posyandu & Anak.xlsx');
+        return response()->download($filePath, 'Format_Posyandu & Anak.xlsx');
     }
 
 }

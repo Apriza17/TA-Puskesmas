@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     @vite('resources/css/app.css')
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <title>Beranda|Admin</title>
     <link rel="icon" href="{{ asset('img/logo.png') }}">
 </head>
@@ -38,72 +39,190 @@
         </div>
     </div>
     {{-- Section --}}
-    <div class="lg:px-52 md:px-28 pt-5">
-        <div class="flex gap-4">
-            <div
-                class=" bg-white animate-fade-up animate-once animate-duration-1000 animate-ease-out drop-shadow-lg outline outline-4 rounded-sm outline-sky-900 lg:w-48 lg:h-48 md:w-40 md:h-40">
-                <p class="text-center bg-sky-900 py-2 text-white font-bold">Angka Stunting</p>
-                <p class="text-center py-10 text-sky-900 font-bold lg:text-4xl md:text-2xl ">15%</p>
-            </div>
-            @if ($jumlahBelumMelapor > 0)
-                <a href="/Belum-Melapor" class="hover:scale-[1.04] transition-all ease-in-out duration-100">
+    <div class="lg:px-48 md:px-28 pt-5">
+        <div class="flex justify-center gap-4">
+            <div>
+                <div class="flex flex-wrap gap-2">
+                    {{-- Card --}}
                     <div
-                        class="110 bg-white animate-fade-up animate-once animate-duration-1000 animate-ease-out animate-delay-[200ms] drop-shadow-lg outline outline-4 rounded-sm outline-sky-900 lg:w-48 lg:h-48 md:w-40 md:h-40">
-                        <p class="text-center bg-sky-900 py-2 text-white font-bold">Belum Melapor</p>
-                        <p class="text-center py-10 text-orange-600 font-bold lg:text-4xl md:text-2xl ">
-                            {{ $jumlahBelumMelapor }} Sartika</p>
-                    </div>
-                </a>
-            @else
-                <div
-                    class=" bg-white animate-fade-up animate-once animate-duration-1000 animate-ease-out animate-delay-[200ms] drop-shadow-lg outline outline-4 rounded-sm outline-sky-900 lg:w-48 lg:h-48 md:w-40 md:h-40">
-                    <p class="text-center bg-sky-900 py-2 text-white font-bold">Laporan Lengkap</p>
-                    <div class="flex justify-center mt-4">
-                        <div class="text-green-400">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="size-16" width="24" height="24"
-                                viewBox="0 0 24 24">
-                                <path fill="currentColor"
-                                    d="m10.6 16.2l7.05-7.05l-1.4-1.4l-5.65 5.65l-2.85-2.85l-1.4 1.4zM5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21z" />
-                            </svg>
+                        class="bg-white shadow-soft rounded-2xl p-5 max-w-52 animate-fade-up animate-once animate-duration-1000 animate-ease-out drop-shadow-lg">
+                        <div class="flex items-start justify-between">
+                            <p class="text-slate-500 font-semibold">Angka Stunting</p>
+                            <span
+                                class="inline-flex items-center justify-center size-8 rounded-xl bg-brand-50 text-brand-700">
+                                <!-- icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24">
+                                    <path fill="currentColor"
+                                        d="M13 13h7v2h-7zm0-4h7v2h-7zM3 17h17v2H3zm0-4h8v2H3zm0-4h8v2H3zm0-4h17v2H3z" />
+                                </svg>
+                            </span>
                         </div>
+                        <div class="mt-5 text-3xl font-bold text-brand-800">
+                            {{ $avgStunting !== null ? number_format($avgStunting, 2) . '%' : '–' }}</div>
+                        <p class="text-slate-500 text-xs mt-1">Rata-rata stunting bulan
+                            {{ now()->translatedFormat('F Y') }}</p>
                     </div>
-                    <p class="text-center text-green-400 font-bold lg:text-2xl md:text-xl ">Lengkap</p>
-                </div>
-            @endif
-            <a href="#" id="openModal" class="hover:scale-[1.04] transition-all ease-in-out duration-100">
-                <div
-                    class=" bg-white animate-fade-up animate-once animate-duration-1000 animate-ease-out animate-delay-[300ms] drop-shadow-lg outline outline-4 rounded-sm outline-sky-900 lg:w-48 lg:h-48 md:w-40 md:h-40">
-                    <p class="text-center bg-sky-900 py-2 text-white font-bold">Notifikasi Masuk</p>
-                    <div class="">
-                        @if (auth()->user()->unreadNotifications->count() > 0)
-                            <div class="flex justify-center items-center py-7 ">
-                                <div>
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                        class="size-14 text-yellow-500 animate-wiggle-more animate-infinite">
-                                        <path
-                                            d="M5.85 3.5a.75.75 0 0 0-1.117-1 9.719 9.719 0 0 0-2.348 4.876.75.75 0 0 0 1.479.248A8.219 8.219 0 0 1 5.85 3.5ZM19.267 2.5a.75.75 0 1 0-1.118 1 8.22 8.22 0 0 1 1.987 4.124.75.75 0 0 0 1.48-.248A9.72 9.72 0 0 0 19.266 2.5Z" />
-                                        <path fill-rule="evenodd"
-                                            d="M12 2.25A6.75 6.75 0 0 0 5.25 9v.75a8.217 8.217 0 0 1-2.119 5.52.75.75 0 0 0 .298 1.206c1.544.57 3.16.99 4.831 1.243a3.75 3.75 0 1 0 7.48 0 24.583 24.583 0 0 0 4.83-1.244.75.75 0 0 0 .298-1.205 8.217 8.217 0 0 1-2.118-5.52V9A6.75 6.75 0 0 0 12 2.25ZM9.75 18c0-.034 0-.067.002-.1a25.05 25.05 0 0 0 4.496 0l.002.1a2.25 2.25 0 1 1-4.5 0Z"
-                                            clip-rule="evenodd" />
+                    {{-- belum lapor --}}
+                    @if ($jumlahBelumMelapor > 0)
+                        <a href="/Belum-Melapor"
+                            class="group block bg-white shadow-soft rounded-2xl p-5 transition-all duration-100 hover:shadow-lg animate-fade-up animate-once animate-duration-1000 animate-ease-out animate-delay-[200ms]">
+                            <div class="flex items-start justify-between">
+                                <p class="text-slate-500 font-semibold">Status Bulanan</p>
+                                <span
+                                    class="inline-flex items-center justify-center size-8 rounded-xl bg-amber-50 text-amber-700">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="size-5" width="24" height="24"
+                                        viewBox="0 0 24 24">
+                                        <path fill="currentColor"
+                                            d="M17.75 3A3.25 3.25 0 0 1 21 6.25v11.5A3.25 3.25 0 0 1 17.75 21H6.25A3.25 3.25 0 0 1 3 17.75V6.25A3.25 3.25 0 0 1 6.25 3zm-10 10.5a1.25 1.25 0 1 0 0 2.5a1.25 1.25 0 0 0 0-2.5m4.25 0a1.25 1.25 0 1 0 0 2.5a1.25 1.25 0 0 0 0-2.5m-4.25-5a1.25 1.25 0 1 0 0 2.5a1.25 1.25 0 0 0 0-2.5m4.25 0a1.25 1.25 0 1 0 0 2.5a1.25 1.25 0 0 0 0-2.5m4.25 0a1.25 1.25 0 1 0 0 2.5a1.25 1.25 0 0 0 0-2.5" />
                                     </svg>
-                                    <p class="text-center font-semibold text-sky-900">
-                                        {{ auth()->user()->unreadNotifications->count() }}</p>
+                                </span>
+                            </div>
+                            <div class="mt-5">
+                                <div class="text-3xl font-bold text-amber-700">{{ $jumlahBelumMelapor }}</div>
+                                <p class="text-slate-600 text-sm">Sartika belum melapor</p>
+                                <span class="text-brand-700 text-sm font-semibold inline-flex items-center gap-1 mt-2">
+                                    Lihat daftar
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24">
+                                        <path fill="currentColor" d="m10 17l5-5l-5-5v10z" />
+                                    </svg>
+                                </span>
+                            </div>
+                        </a>
+                    @else
+                        <div
+                            class="bg-white shadow-soft rounded-2xl p-5 animate-fade-up animate-once animate-duration-1000 animate-ease-out animate-delay-[200ms]">
+                            <div class="flex items-start justify-between">
+                                <p class="text-slate-500 text-sm">Status Bulanan</p>
+                                <span
+                                    class="inline-flex items-center justify-center size-8 rounded-xl bg-emerald-50 text-emerald-700">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24">
+                                        <path fill="currentColor"
+                                            d="m9 16.17l-3.88-3.88L4 13.41L9 18.41L20.59 6.83L19.17 5.41z" />
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="mt-5 text-3xl font-bold text-emerald-700">Lengkap</div>
+                            <p class="text-slate-500 text-xs mt-1">Semua posyandu sudah melapor</p>
+                        </div>
+                    @endif
+                    {{-- notifikasi --}}
+                    <a href="#" id="openModal"
+                        class="group bg-white shadow-soft rounded-2xl p-5  hover:shadow-lg transition animate-fade-up animate-once animate-duration-1000 animate-ease-out animate-delay-[300ms]">
+                        <div class="flex items-start justify-between">
+                            <p class="text-slate-500 font-semibold">Notifikasi Masuk</p>
+                            <span
+                                class="inline-flex items-center justify-center size-8 rounded-xl bg-yellow-50 text-yellow-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24">
+                                    <path fill="currentColor"
+                                        d="M12 22a2 2 0 0 0 2-2H10a2 2 0 0 0 2 2m6-6v-5a6 6 0 0 0-4-5.65V4a2 2 0 1 0-4 0v1.35A6 6 0 0 0 6 11v5l-2 2v1h16v-1z" />
+                                </svg>
+                            </span>
+                        </div>
 
+                        @if (auth()->user()->unreadNotifications->count() > 0)
+                            <div class="mt-5 flex items-center gap-3">
+
+                                <div>
+                                    <div class="text-2xl font-bold text-yellow-600">
+                                        {{ auth()->user()->unreadNotifications->count() }}</div>
+                                    <p class="text-slate-500 text-xs">belum dibaca</p>
                                 </div>
                             </div>
                         @else
-                            <p class="text-center text-sky-900 font-semibold py-14 ">Notifikasi Kosong</p>
+                            <p class="mt-6 text-slate-600">Notifikasi kosong</p>
                         @endif
+                    </a>
+                </div>
+                {{-- top3 --}}
+                <div class="mt-6">
+                    <div
+                        class="bg-white rounded-2xl shadow-md ring-1 ring-black/5 p-5 animate-fade-up animate-once animate-duration-1000 animate-ease-out animate-delay-[300ms]">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-slate-800 font-semibold">
+                                Top 3 Posyandu Angka Stunting Terendah
+                                <span class="text-slate-500 font-normal">
+                                    ({{ now()->translatedFormat('F Y') }})
+                                </span>
+                            </h3>
+                        </div>
 
+                        @if (!empty($top3))
+                            <ol class="divide-y divide-slate-100">
+                                @foreach ($top3 as $i => $row)
+                                    <li class="py-3 flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <span
+                                                class="inline-flex size-8 items-center justify-center rounded-full text-white
+                                    {{ [0 => 'bg-amber-500', 1 => 'bg-slate-400', 2 => 'bg-orange-600'][$i] ?? 'bg-slate-300' }}">
+                                                {{ $i + 1 }}
+                                            </span>
+                                            <div>
+                                                <div class="font-semibold text-slate-800">{{ $row['nama'] }}</div>
+                                                <div class="text-xs text-slate-500">
+                                                    Ditimbang: {{ $row['ditimbang'] }} &middot; Stunting:
+                                                    {{ $row['stunted'] }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="text-lg font-bold text-emerald-600">
+                                            {{ number_format($row['rate'], 2) }}%
+                                        </div>
+                                    </li>
+                                @endforeach
+                            </ol>
+                        @else
+                            <p class="text-slate-500 text-sm">Belum ada data penimbangan pada bulan ini.</p>
+                        @endif
                     </div>
                 </div>
-            </a>
+            </div>
+            {{-- kalender --}}
             <div
-                class=" bg-white animate-fade-up animate-once animate-duration-1000 animate-ease-out animate-delay-[400ms] drop-shadow-lg outline outline-4 rounded-sm outline-cyan-500 w-96 lg:h-48 md:h-40">
-                <p class="text-center bg-cyan-500 py-2 text-white font-bold">Tanggal</p>
-                <p class="text-center py-10 text-cyan-500 font-bold lg:text-4xl md:text-2xl ">1</p>
+                class=" bg-white animate-fade-up animate-once animate-duration-1000 animate-ease-out animate-delay-[400ms] drop-shadow-lg rounded-sm w-96">
+                <div class="bg-white shadow-soft rounded-2xl p-5" x-data="miniCalendar()" x-init="init()">
+                    <div class="flex items-center justify-between mb-3">
+                        <button class="p-2 rounded-lg hover:bg-slate-100" @click="prevMonth()" aria-label="Prev">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="m15 18l-6-6l6-6v12z" />
+                            </svg>
+                        </button>
+                        <div class="text-sm font-semibold text-slate-800" x-text="title"></div>
+                        <button class="p-2 rounded-lg hover:bg-slate-100" @click="nextMonth()" aria-label="Next">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="m9 6l6 6l-6 6V6z" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-7 text-[11px] text-slate-500 mb-1">
+                        <div class="text-center">Min</div>
+                        <div class="text-center">Sen</div>
+                        <div class="text-center">Sel</div>
+                        <div class="text-center">Rab</div>
+                        <div class="text-center">Kam</div>
+                        <div class="text-center">Jum</div>
+                        <div class="text-center">Sab</div>
+                    </div>
+
+                    <div class="grid grid-cols-7 gap-1">
+                        <template x-for="(d,i) in days" :key="i">
+                            <div class="aspect-square">
+                                <div class="w-full h-full flex items-center justify-center text-sm rounded-lg"
+                                    :class="{
+                                        'text-slate-300': d.muted,
+                                        'bg-brand-600 text-white font-semibold': d.isToday,
+                                        'hover:bg-slate-100': !d.isToday && !d.muted
+                                    }"
+                                    x-text="d.num"></div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
             </div>
         </div>
+
+
     </div>
     {{-- Modal --}}
     <div id="modal" class="fixed inset-0 flex  items-center justify-end bg-gray-900 bg-opacity-50 hidden">
@@ -172,5 +291,81 @@
         }
     });
 </script>
+
+{{-- kalender --}}
+<script>
+    function miniCalendar() {
+        return {
+            current: new Date(),
+            days: [],
+            title: '',
+            init() {
+                this.build();
+            },
+            build() {
+                const y = this.current.getFullYear();
+                const m = this.current.getMonth();
+
+                // judul
+                this.title = this.current.toLocaleString('id-ID', {
+                    month: 'long',
+                    year: 'numeric'
+                });
+
+                // hari pertama & jumlah hari
+                const first = new Date(y, m, 1);
+                const last = new Date(y, m + 1, 0);
+                const prevLast = new Date(y, m, 0);
+
+                const startPad = (first.getDay() + 6) % 7; // Sen=0 … Min=6 → grid Min-Sab
+                const total = last.getDate();
+
+                const today = new Date();
+                const isSameDay = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a
+                    .getDate() === b.getDate();
+
+                this.days = [];
+
+                // hari dari bulan sebelumnya (muted)
+                for (let i = startPad; i > 0; i--) {
+                    this.days.push({
+                        num: prevLast.getDate() - i + 1,
+                        muted: true,
+                        isToday: false
+                    });
+                }
+
+                // hari aktif bulan ini
+                for (let d = 1; d <= total; d++) {
+                    const cur = new Date(y, m, d);
+                    this.days.push({
+                        num: d,
+                        muted: false,
+                        isToday: isSameDay(cur, today)
+                    });
+                }
+
+                // pad ke kelipatan 7
+                while (this.days.length % 7 !== 0) {
+                    const n = this.days.length - (startPad + total) + 1;
+                    this.days.push({
+                        num: n,
+                        muted: true,
+                        isToday: false
+                    });
+                }
+            },
+            prevMonth() {
+                this.current.setMonth(this.current.getMonth() - 1);
+                this.build();
+            },
+            nextMonth() {
+                this.current.setMonth(this.current.getMonth() + 1);
+                this.build();
+            },
+        }
+    }
+</script>
+
 
 </html>

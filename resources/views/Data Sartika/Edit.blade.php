@@ -47,18 +47,6 @@
                         <div class="h-1 bg-cyan-600 w-52 rounded-lg "></div>
 
                     </div>
-                    {{-- <div class="mb-5">
-                        <label for="" class="text-sky-900 font-semibold mb-2">Kader</label>
-                        <br>
-                        <select name="kader_id" id="" class="w-52">
-                            <option value="">{{ $posyandu->kader->name ?? 'Tidak Ada Kader'}}</option>
-                            @foreach ($users as $u)
-                                <option value="{{ $u->id }}">{{ $u->name }}</option>
-                            @endforeach
-                        </select>
-                        <div class="h-1 bg-cyan-600 w-52 rounded-lg "></div>
-
-                    </div> --}}
                     <div class="justify-center flex">
                         <button class="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-700"
                             type="submit">Simpan
