@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Notifications\CustomResetPassword;
 
 class User extends Authenticatable
 {
@@ -30,6 +31,12 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Posyandu::class, 'posyandu_id');
     }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new CustomResetPassword($token));
+    }
+
 
     /**
      * The attributes that should be hidden for serialization.

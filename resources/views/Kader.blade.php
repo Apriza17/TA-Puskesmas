@@ -40,34 +40,45 @@
                 <label for="" class="font-semibold">Username</label>
                 <br>
                 <input type="text" name="name" id="" class="w-full placeholder:italic font-thin"
-                    placeholder="Masukan disini">
+                    placeholder="Masukan disini" required>
                 <div class="h-1 bg-cyan-600 rounded-lg "></div>
+                @error('name')
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
             <div class="w-52">
                 <label for="" class="font-semibold">Posyandu</label>
                 <br>
-                <select name="posyandu_id" class="w-full italic font-thin" id="">
+                <select name="posyandu_id" class="w-full italic font-thin" id="" required>
                     <option value="" class=" font-normal ">Pilih posyandu</option>
                     @foreach ($posyandu as $p)
                         <option class="" value="{{ $p->id }}">{{ $p->nama }}</option>
                     @endforeach
-
                 </select>
                 <div class="h-1 bg-cyan-600 rounded-lg"></div>
+                @error('posyandu_id')
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
             <div class="w-52">
                 <label for="" class="font-semibold">Email</label>
                 <br>
                 <input type="email" name="email" id="" class="w-full placeholder:italic font-thin"
-                    placeholder="Masukan disini">
+                    placeholder="Masukan disini" required>
                 <div class="h-1 bg-cyan-600 rounded-lg "></div>
+                @error('email')
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
             <div class="w-52">
                 <label for="" class="font-semibold">Password</label>
                 <br>
                 <input type="password" name="password" id="" class="w-full placeholder:italic font-thin"
-                    placeholder="Masukan disini">
+                    placeholder="Masukan disini" required>
                 <div class="h-1 bg-cyan-600 rounded-lg"></div>
+                @error('password')
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
 
@@ -108,26 +119,31 @@
             </table>
         </div>
         {{-- Modal konfirmasi hapus --}}
-        <div id="deleteModal" class="fixed inset-0 flex  items-center justify-center bg-gray-900 bg-opacity-50 hidden">
-            <div class="bg-white rounded-lg animate-jump-in shadow-lg w-96">
-                <div class="bg-gradient-to-r from-red-600 rounded-t-lg to-red-400 h-2 w-full"></div>
-                <div class="p-6 justify-items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                        class="size-16 text-red-600">
-                        <path fill-rule="evenodd"
-                            d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    <h2 class="text-lg font-semibold">Konfirmasi Hapus</h2>
-                    <p class="text-sm text-center text-slate-600 ">Apakah anda yakin ingin menghapus pengguna ini?</p>
-                    <div class="mt-5 flex">
+        <div id="deleteModal" class="hidden">
+            <div class="fixed inset-0 flex  items-center justify-center bg-gray-900 bg-opacity-50">
+                <div class="bg-white rounded-lg animate-jump-in animate-duration-500 shadow-lg w-full max-w-md p-5">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="rounded-full bg-rose-100 text-rose-600 p-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path
+                                    d="M12.884 2.532c-.346-.654-1.422-.654-1.768 0l-9 17A1 1 0 0 0 3 21h18a.998.998 0 0 0 .883-1.467zM13 18h-2v-2h2zm-2-4V9h2l.001 5z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-slate-800">Hapus Pengguna</h3>
+                    </div>
+                    <p class="text-slate-600 text-sm">
+                        Kamu akan menghapus Akun Pengguna?
+                        Tindakan ini <span class="font-semibold text-rose-600">tidak dapat dibatalkan</span>.
+                    </p>
+                    <div class="mt-3 flex justify-end">
                         <button onclick="closeModal()"
                             class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded mr-2 scale-100 peer hover:scale-105 transition ease-in-out duration-150">Batal</button>
                         <form method="POST" id="deleteForm">
                             @csrf
                             @method('DELETE')
                             <button type="submit"
-                                class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 scale-100 peer hover:scale-105 transition ease-in-out duration-150">Hapus
+                                class="bg-rose-500 text-white px-4 py-2 rounded hover:bg-rose-700 scale-100 peer hover:scale-105 transition ease-in-out duration-150">Ya,Hapus
                             </button>
                         </form>
                     </div>

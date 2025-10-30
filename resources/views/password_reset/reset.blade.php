@@ -24,7 +24,7 @@
                     <h2 class="text-2xl font-bold text-sky-900 text-center">Lupa Password</h2>
                     <p class="text-slate-600 mt-1 text-sm bg-yellow-200/50 p-2 rounded-md"><span
                             class="font-bold text-yellow-800">Perhatian :</span>
-                        Silahkan masukan password yang baru!</p>
+                        Silahkan masukan password yang baru! Min : 8 Karakter</p>
 
                     {{-- Form Lupa Password --}}
                     @if (session('status'))

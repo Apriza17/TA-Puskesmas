@@ -15,7 +15,7 @@
     <div class="bg-gradient-to-r relative from-cyan-800 to-cyan-600 h-28 drop-shadow-lg overflow-hidden">
         <div class="text-white font-semibold flex justify-center items-center h-full">
             <img src="img/edge dec1.png" class="absolute z-0 size-56 right-0 rotate-90" alt="">
-            <div class="text-2xl">Laporan Bulanan Anak</div>
+            <div class="text-2xl">Laporan Gizi</div>
             <a href="/dashboard1" class="absolute left-4">
                 <div class="">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-9">
@@ -50,7 +50,20 @@
         <div class="bg-gray-900/70 fixed inset-0 flex items-center justify-center z-50 ">
             <div class="bg-white rounded-lg p-6 max-w-lg shadow-lg animate-jump-in duration-100">
                 <p class="text-2xl font-bold text-center mb-2">Gagal</p>
-                <svg xmlns="http://www.w3.org/2000/svg" class="size-24 mx-auto text-red-700" width="48" height="48" viewBox="0 0 48 48"><defs><mask id="SVGkgqorNOO"><g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"><path fill="#fff" stroke="#fff" d="M10 44h28a2 2 0 0 0 2-2V14H30V4H10a2 2 0 0 0-2 2v36a2 2 0 0 0 2 2"/><path stroke="#fff" d="m30 4l10 10"/><path stroke="#000" d="m18 22l12 12m0-12L18 34"/></g></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#SVGkgqorNOO)"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="size-24 mx-auto text-red-700" width="48"
+                    height="48" viewBox="0 0 48 48">
+                    <defs>
+                        <mask id="SVGkgqorNOO">
+                            <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="4">
+                                <path fill="#fff" stroke="#fff"
+                                    d="M10 44h28a2 2 0 0 0 2-2V14H30V4H10a2 2 0 0 0-2 2v36a2 2 0 0 0 2 2" />
+                                <path stroke="#fff" d="m30 4l10 10" />
+                                <path stroke="#000" d="m18 22l12 12m0-12L18 34" />
+                            </g>
+                        </mask>
+                    </defs>
+                    <path fill="currentColor" d="M0 0h48v48H0z" mask="url(#SVGkgqorNOO)" />
+                </svg>
                 <p class="mt-2 text-center">{{ session('error') }}</p>
                 <a href="/Laporan-anak"
                     class="bg-gradient-to-r text-center max-w-28 from-sky-900 to-cyan-600 text-white px-4 py-2 mt-4 rounded-md mx-auto block hover:scale-105 transition transform duration-200 ease-in-out">Kembali</a>
@@ -102,6 +115,27 @@
                     <p class="text-sm text-slate-600 mt-2">Isi sesuai hasil penimbangan/pengukuran bulan berjalan.
                         Gunakan titik (.) untuk desimal.</p>
                 </div>
+                 <div class="mt-4">
+                    <form method="POST" action="{{ route('laporan-anak.import') }}" enctype="multipart/form-data"
+                        class="rounded-xl bg-white ring-1 ring-black/5 shadow-sm p-5 mb-4">
+                        @csrf
+                        <p class="text-slate-800 font-semibold mb-3">Import Data</p>
+                        <div class="flex items-center gap-2">
+                            <input type="file" name="file" accept=".xlsx,.xls,.csv" required
+                                class="block w-full text-sm text-slate-700 border-2 border-gray-200 hover:border-gray-500 rounded-lg">
+                            <button class="px-3 py-1 rounded-md bg-sky-700 text-white hover:bg-sky-900">
+                                Import
+                            </button>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-2">
+                            Format file: .xlsx, .xls, .csv. Gunakan template yang disediakan <a
+                                href="/templates/LaporanTemplate.xlsx" class="text-sky-500 underline"> di sini</a>.
+                        </p>
+                        @error('file')
+                            <div class="text-rose-600 text-sm mt-2">{{ $message }}</div>
+                        @enderror
+                    </form>
+                </div>
 
             </div>
             {{-- FORM --}}
@@ -124,7 +158,7 @@
                             <label class="block text-sm font-medium text-slate-700">Nama</label>
                             <select name="anak_id"
                                 class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2
-                                    focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent">
+                                    focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent @error('anak_id') ring-2 ring-rose-500 border-transparent @enderror">
                                 <option value="" selected disabled>Pilih nama anak</option>
                                 @foreach ($anakList as $anak)
                                     <option value="{{ $anak->id }}">{{ $anak->nama }}</option>
@@ -164,9 +198,9 @@
                         {{-- Berat Badan (JANGAN ubah name!) --}}
                         <div class="mb-3">
                             <label class="block text-sm font-medium text-slate-700">Berat Badan</label>
-                            <input type="number" step="0.1" name="berat_badan" placeholder="Masukan disini"
+                            <input type="number" step="0.1" name="berat_badan" placeholder="Contoh : 7.5 kg"
                                 class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2
-                                    focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent placeholder:italic"
+                                    focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent placeholder:italic @error('berat_badan') ring-2 ring-rose-500 border-transparent @enderror"
                                 value="{{ old('berat_badan') }}">
                             @error('berat_badan')
                                 <p class="text-sm text-rose-600 mt-1">{{ $message }}</p>
@@ -176,9 +210,9 @@
                         {{-- Tinggi Badan (JANGAN ubah name!) --}}
                         <div class="mb-3">
                             <label class="block text-sm font-medium text-slate-700">Tinggi Badan</label>
-                            <input type="number" step="0.1" name="tinggi_badan" placeholder="Masukan disini"
+                            <input type="number" step="0.1" name="tinggi_badan" placeholder="Contoh : 65.5 cm"
                                 class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2
-                                    focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent placeholder:italic"
+                                    focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent placeholder:italic @error('tinggi_badan') ring-2 ring-rose-500 border-transparent @enderror"
                                 value="{{ old('tinggi_badan') }}">
                             @error('tinggi_badan')
                                 <p class="text-sm text-rose-600 mt-1">{{ $message }}</p>
@@ -188,9 +222,9 @@
                         {{-- Lingkar Kepala (JANGAN ubah name!) --}}
                         <div class="mb-3">
                             <label class="block text-sm font-medium text-slate-700">Lingkar Kepala</label>
-                            <input type="number" step="0.1" name="lingkar_kepala" placeholder="Masukan disini"
+                            <input type="number" step="0.1" name="lingkar_kepala" placeholder="Contoh : 45.0 cm"
                                 class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2
-                                    focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent placeholder:italic"
+                                    focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent placeholder:italic @error('lingkar_kepala') ring-2 ring-rose-500 border-transparent @enderror"
                                 value="{{ old('lingkar_kepala') }}">
                             @error('lingkar_kepala')
                                 <p class="text-sm text-rose-600 mt-1">{{ $message }}</p>
@@ -201,9 +235,9 @@
                         <div>
                             <label class="block text-sm font-medium text-slate-700">Lingkar Lengan Atas</label>
                             <input type="number" step="0.1" name="lingkar_lengan_atas"
-                                placeholder="Masukan disini"
+                                placeholder="Contoh : 13.5 cm"
                                 class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2
-                                    focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent placeholder:italic"
+                                    focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent placeholder:italic @error('lingkar_lengan_atas') ring-2 ring-rose-500 border-transparent @enderror"
                                 value="{{ old('lingkar_lengan_atas') }}">
                             @error('lingkar_lengan_atas')
                                 <p class="text-sm text-rose-600 mt-1">{{ $message }}</p>

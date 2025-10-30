@@ -72,68 +72,80 @@
                     <form method="POST" action="{{ route('simpanRegis') }}" class="font text-sky-900">
                         @csrf
                         {{-- nama --}}
-                        <label for="" class="font-semibold">Nama</label>
-                        <br>
-                        <input type="text" name="nama" id=""
-                            class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2
-                                    focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent placeholder:italic mb-3"
-                            placeholder="Masukan disini">
-                        @error('nama')
-                            <p class="text-red-500 font-normal text-sm mb-3">{{ $message }}</p>
-                        @enderror
+                        <div class="mb-3">
+                            <label for="" class="font-semibold">Nama</label>
+                            <br>
+                            <input type="text" name="nama" id=""
+                                class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2
+                                        focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent placeholder:italic @error('nama') ring-2 ring-rose-500 border-transparent @enderror"
+                                placeholder="Masukan disini">
+                            @error('nama')
+                                <p class="text-red-500 font-normal text-sm mb-3">{{ $message }}</p>
+                            @enderror
+                        </div>
                         {{-- kelamin --}}
-                        <label for="" class="font-semibold">Kelamin</label>
-                        <br>
-                        <select name="kelamin" id=""
-                            class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2
-                                    focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent placeholder:italic mb-3">
-                            <option value="" class="">Jenis Kelamin</option>
-                            <option value="L">Laki-laki</option>
-                            <option value="P">Perempuan</option>
-                        </select>
-                        @error('kelamin')
-                            <p class="text-red-500 font-normal text-sm mb-3">{{ $message }}</p>
-                        @enderror
+                        <div class="mb-3">
+                            <label for="" class="font-semibold">Kelamin</label>
+                            <br>
+                            <select name="kelamin" id=""
+                                class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2
+                                        focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent placeholder:italic @error('kelamin') ring-2 ring-rose-500 border-transparent @enderror">
+                                <option value="" class="">Jenis Kelamin</option>
+                                <option value="L">Laki-laki</option>
+                                <option value="P">Perempuan</option>
+                            </select>
+                            @error('kelamin')
+                                <p class="text-red-500 font-normal text-sm mb-3">{{ $message }}</p>
+                            @enderror
+                        </div>
                         {{-- NIK --}}
-                        <label for="" class="font-semibold">NIK</label>
-                        <br>
-                        <input type="text" name="nik" id=""
-                            class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2
-                                    focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent placeholder:italic mb-3"
-                            placeholder="Masukan disini">
-                        @error('nik')
-                            <p class="text-red-500 font-normal text-sm">{{ $message }}</p>
-                        @enderror
+                        <div class="mb-3">
+                            <label for="" class="font-semibold">NIK</label>
+                            <br>
+                            <input type="text" name="nik" id=""
+                                class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2
+                                        focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent placeholder:italic @error('nik') ring-2 ring-rose-500 border-transparent @enderror"
+                                placeholder="Masukan disini">
+                            @error('nik')
+                                <p class="text-red-500 font-normal text-sm">{{ $message }}</p>
+                            @enderror
+                        </div>
                         {{-- tanggal lahir --}}
-                        <label for="" class="font-semibold">Tanggal Lahir</label>
-                        <br>
-                        <input type="date" name="tanggal_lahir" id=""
-                            class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2
-                                    focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent placeholder:italic mb-3"
-                            placeholder="Masukan disini">
-                        @error('tanggal_lahir')
-                            <p class="text-red-500 font-normal text-sm">{{ $message }}</p>
-                        @enderror
+                        <div class="mb-3">
+                            <label for="" class="font-semibold">Tanggal Lahir</label>
+                            <br>
+                            <input type="date" name="tanggal_lahir" id=""
+                                class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2
+                                        focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent placeholder:italic @error('tanggal_lahir') ring-2 ring-rose-500 border-transparent @enderror"
+                                placeholder="Masukan disini">
+                            @error('tanggal_lahir')
+                                <p class="text-red-500 font-normal text-sm">{{ $message }}</p>
+                            @enderror
+                        </div>
                         {{-- berat lahir --}}
-                        <label for="" class="font-semibold">Berat Lahir</label>
-                        <br>
-                        <input type="number" step="any" name="berat_lahir" id=""
-                            class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2
-                                    focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent placeholder:italic mb-3"
-                            placeholder="Masukan disini">
-                        @error('berat_lahir')
-                            <p class="text-red-500 font-normal text-sm">{{ $message }}</p>
-                        @enderror
+                        <div class="mb-3">
+                            <label for="" class="font-semibold">Berat Lahir</label>
+                            <br>
+                            <input type="number" step="any" name="berat_lahir" id=""
+                                class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2
+                                        focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent placeholder:italic @error('berat_lahir') ring-2 ring-rose-500 border-transparent @enderror"
+                                placeholder="Masukan disini">
+                            @error('berat_lahir')
+                                <p class="text-red-500 font-normal text-sm">{{ $message }}</p>
+                            @enderror
+                        </div>
                         {{-- tinggi lahir --}}
-                        <label for="" class="font-semibold">Tinggi Lahir</label>
-                        <br>
-                        <input type="number" step="any" name="tinggi_lahir" id=""
-                            class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2
-                                    focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent placeholder:italic mb-3"
-                            placeholder="Masukan disini">
-                        @error('tinggi_lahir')
-                            <p class="text-red-500 font-normal text-sm">{{ $message }}</p>
-                        @enderror
+                        <div class="mb-3">
+                            <label for="" class="font-semibold">Tinggi Lahir</label>
+                            <br>
+                            <input type="number" step="any" name="tinggi_lahir" id=""
+                                class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2
+                                        focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent placeholder:italic @error('tinggi_lahir') ring-2 ring-rose-500 border-transparent @enderror"
+                                placeholder="Masukan disini">
+                            @error('tinggi_lahir')
+                                <p class="text-red-500 font-normal text-sm">{{ $message }}</p>
+                            @enderror
+                        </div>
                         <button type="submit"
                             class="w-full bg-sky-900 rounded-2xl text-white py-1 font-semibold mt-2 scale-100 hover:scale-105 transition ease-in-out duration-200">Daftarkan
                             Anak</button>

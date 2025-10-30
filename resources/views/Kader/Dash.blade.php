@@ -182,25 +182,27 @@
 
 
     {{-- Modal --}}
-    <div id="modal" class="fixed inset-0 flex  items-center justify-center bg-gray-900 bg-opacity-50 hidden">
-        <div class="bg-slate-200 w-72 rounded-md relative animate-jump-in">
-            <button class="absolute -right-2 -top-2" id="closeModal">
-                <div class=" bg-red-300 rounded-full p-1" id="">❌</div>
-            </button>
-            <div class="p-3">
-                <p class="font-semibold text-center mb-4 text-sky-900">Pilih Jenis Laporan</p>
-                <a href="/Regis-anak">
-                    <div
-                        class="bg-gradient-to-r items-center justify-center from-sky-900 to-cyan-600 h-10 rounded-md flex">
-                        <p class="text-center text-white ">Registrasi</p>
-                    </div>
-                </a>
-                <a href="/Laporan-anak">
-                    <div
-                        class="bg-gradient-to-r mt-2 items-center justify-center from-sky-900 to-cyan-600 h-10 rounded-md flex">
-                        <p class="text-center text-white ">Laporan Gizi</p>
-                    </div>
-                </a>
+    <div id="modal" class="hidden">
+        <div  class="fixed inset-0 flex  items-center justify-center bg-gray-900 bg-opacity-50 ">
+            <div class="bg-slate-200 w-72 rounded-md relative animate-jump-in">
+                <button class="absolute -right-2 -top-2" id="closeModal">
+                    <div class=" bg-red-300 rounded-full p-1" id="">❌</div>
+                </button>
+                <div class="p-3">
+                    <p class="font-semibold text-center mb-4 text-sky-900">Pilih Jenis Laporan</p>
+                    <a href="/Regis-anak">
+                        <div
+                            class="bg-gradient-to-r items-center justify-center from-sky-900 to-cyan-600 h-10 rounded-md flex">
+                            <p class="text-center text-white ">Daftarkan Anak Baru</p>
+                        </div>
+                    </a>
+                    <a href="/Laporan-anak">
+                        <div
+                            class="bg-gradient-to-r mt-2 items-center justify-center from-sky-900 to-cyan-600 h-10 rounded-md flex">
+                            <p class="text-center text-white ">Laporan Gizi</p>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
     </div>

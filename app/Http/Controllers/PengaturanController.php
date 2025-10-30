@@ -67,6 +67,9 @@ class PengaturanController extends Controller
             'logout_others'    => ['nullable', 'boolean'],
         ],[
             'current_password.current_password' => 'Password saat ini tidak cocok.',
+            'password.min' => 'Password baru minimal 8 karakter.',
+            'password.max' => 'Password baru maksimal 72 karakter.',
+            'confirmed' => 'Konfirmasi password tidak sesuai.',
         ]);
 
         $user = $request->user();

@@ -22,6 +22,11 @@ class AuthController extends Controller
             'name'=>'required',
             'email'=>'email|required',
             'password'=>'required',
+        ],[
+            'name.required'=>'Nama wajib diisi',
+            'email.email'=>'Email tidak valid',
+            'email.required'=>'Email wajib diisi',
+            'password.required'=>'Password wajib diisi',
         ])->validate();
 
         user::create([
@@ -43,8 +48,14 @@ class AuthController extends Controller
         // dd($request->all());
         $request->validate([
             'name'=>'required',
-            'password'=>'required',
-    ]);
+            'password'=>'required|',
+
+        ],[
+            'name.required'=>'Nama wajib diisi',
+            'password.required'=>'Password wajib diisi',
+
+
+        ]);
 
         $data = [
             'name' =>$request->name,
@@ -59,7 +70,7 @@ class AuthController extends Controller
             }
 
         }else{
-            return back()->withErrors('Login Gagal ! Silahkan Cek Kembali Username dan Password Anda');
+            return back()->with('error','Login Gagal ! Silahkan Cek Kembali Username dan Password Anda');
         }
 
     }
@@ -75,21 +86,32 @@ class AuthController extends Controller
     public function penggunaBaru(Request $request)
     {
         // dd($request->all());
-        Validator::make($request->all(),[
-            'name'=>'required',
-            'email'=>'email|required',
-            'password'=>'required',
-            'posyandu_id'=>'required',
+        Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email', // <-- DIPERBAIKI
+            'password' => 'required|string|min:8', // <-- Aturan min:8 dipindah ke sini
+            'posyandu_id' => 'required|integer|exists:posyandu,id', // Validasi tambahan
+        ], [
+            // Pesan error kustom (opsional tapi bagus)
+            'email.unique' => 'Email ini sudah digunakan. Silakan gunakan email lain.',
+            'password.min' => 'Password harus terdiri dari minimal 8 karakter.',
+            'posyandu_id.exists' => 'Posyandu yang dipilih tidak valid.',
+            'name.required' => 'Nama wajib diisi',
+            'email.required' => 'Email wajib diisi',
+            'password.required' => 'Password wajib diisi',
+            'posyandu_id.required' => 'Posyandu wajib dipilih',
+
         ])->validate();
 
-        user::create([
-            'name'=>$request->name,
-            'email'=>$request->email,
-            'password'=>Hash::make($request->password),
-            'role'=>'kader',
-            'posyandu_id'=>$request->posyandu_id,
-        ]);
-        return redirect('/Pengguna');
+        User::create([ // <-- DIPERBAIKI (U besar)
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'kader',
+            'posyandu_id' => $request->posyandu_id,
+        ],);
+
+        return redirect('/Pengguna')->with('success', 'Pengguna baru berhasil ditambahkan');
     }
 
     public function tabelUser() {

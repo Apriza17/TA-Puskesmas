@@ -59,12 +59,20 @@ class KaderController extends Controller
         $this->authorizeAnakForKader($anak);
 
         $validated = $request->validate([
-            'nik'           => ['required', 'string', 'max:32', Rule::unique('anak', 'nik')->ignore($anak->id)],
+            'nik'           => ['required', 'string', 'max:16', Rule::unique('anak', 'nik')->ignore($anak->id)],
             'nama'          => ['required', 'string', 'max:100'],
             'kelamin'       => ['required', Rule::in(['L','P'])],
             'tanggal_lahir' => ['required', 'date'],
             'berat_lahir'   => ['required', 'numeric', 'min:0'],
             'tinggi_lahir'  => ['required', 'numeric', 'min:0'],
+        ],[
+            'nik.unique' => 'NIK sudah terdaftar untuk anak lain.',
+            'nik.max' => 'NIK maksimal 16 karakter.',
+            'kelamin.in' => 'Jenis kelamin harus diisi dengan L atau P.',
+            'berat_lahir.min' => 'Berat lahir harus bernilai positif.',
+            'tinggi_lahir.min' => 'Tinggi lahir harus bernilai positif.',
+            'berat_lahir.numeric' => 'Berat lahir harus berupa angka.',
+            'tinggi_lahir.numeric' => 'Tinggi lahir harus berupa angka.',
         ]);
 
         $anak->update($validated);
@@ -201,6 +209,14 @@ class KaderController extends Controller
             'tinggi_badan' => 'required|numeric',
             'lingkar_kepala' => 'required|numeric',
             'lingkar_lengan_atas' => 'required|numeric',
+        ],[
+            'anak_id.exists' => 'Anak yang dipilih tidak valid.',
+            'anak_id.required' => 'Anak harus dipilih.',
+            'tanggal_pemeriksaan.required' => 'Tanggal pemeriksaan harus diisi.',
+            'berat_badan.required' => 'Berat badan harus diisi.',
+            'tinggi_badan.required' => 'Tinggi badan harus diisi.',
+            'lingkar_kepala.required' => 'Lingkar kepala harus diisi.',
+            'lingkar_lengan_atas.required' => 'Lingkar lengan atas harus diisi.',
         ]);
 
         // Simpan laporan anak
@@ -363,6 +379,8 @@ class KaderController extends Controller
             'logout_others'    => ['nullable', 'boolean'],
         ],[
             'current_password.current_password' => 'Password saat ini tidak cocok.',
+            'password.min' => 'Password baru harus terdiri dari minimal 8 karakter.',
+            'password.max' => 'Password baru maksimal 72 karakter.',
         ]);
 
         $user = $request->user();
@@ -377,8 +395,8 @@ class KaderController extends Controller
 
     public function templateLaporan()
     {
-        $filePath = storage_path('app/templates/Format_Posyandu & Anak.xlsx');
-        return response()->download($filePath, 'Format_Posyandu & Anak.xlsx');
+        $filePath = storage_path('app/templates/Format_laporan_bulanan.xlsx');
+        return response()->download($filePath, 'Format_laporan_bulanan.xlsx');
     }
 
 }

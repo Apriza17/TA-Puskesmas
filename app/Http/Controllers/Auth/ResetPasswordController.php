@@ -24,6 +24,10 @@ class ResetPasswordController extends Controller
             'token'    => ['required'],
             'email'    => ['required','email'],
             'password' => ['required','confirmed','min:8'],
+        ],[
+            'password.min' => 'Password harus terdiri dari minimal 8 karakter.',
+            'password.confirmed' => 'Konfirmasi password tidak sesuai.',
+            'email.email' => 'Format email tidak valid.',
         ]);
 
         $status = Password::reset(

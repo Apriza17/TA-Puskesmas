@@ -133,4 +133,7 @@ Route::middleware(['auth', 'role:kader'])->group(function () {
     //Pengaturan
     Route::get('/Pengaturan', [KaderController::class, 'pengaturan'])->name('kader.settings'); // halaman form
     Route::post('/Pengaturan/password', [KaderController::class, 'updatePassword'])->name('kader.settings.password'); // submit ubah password
+
+    //template
+    Route::get('/Pengaturan/laporan/template', [KaderController::class, 'templateLaporan'])->name('kader.laporan.template');
 });

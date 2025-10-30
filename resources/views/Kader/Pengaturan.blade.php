@@ -65,8 +65,8 @@
                     <div>
                         <label class="block text-sm font-medium text-slate-700">Password saat ini</label>
                         <div class="relative mt-1">
-                            <input type="password" name="current_password"
-                                class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-600"
+                            <input type="password" name="current_password" placeholder="Masukan Password Lama anda!"
+                                class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-600 @error('current_password') ring-2 ring-rose-500 border-transparent @enderror"
                                 required>
                         </div>
                         @error('current_password')
@@ -77,8 +77,8 @@
                     <div>
                         <label class="block text-sm font-medium text-slate-700">Password baru</label>
                         <div class="relative mt-1">
-                            <input :type="show ? 'text' : 'password'" name="password"
-                                class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-600"
+                            <input :type="show ? 'text' : 'password'" name="password" placeholder="Silahkan Buat Password Baru!"
+                                class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-600 @error('password') ring-2 ring-rose-500 border-transparent @enderror"
                                 minlength="8" required>
                             <button type="button" @click="show=!show"
                                 class="absolute inset-y-0 right-2 my-auto text-slate-500 text-sm">
@@ -96,16 +96,9 @@
 
                     <div>
                         <label class="block text-sm font-medium text-slate-700">Konfirmasi password baru</label>
-                        <input :type="show ? 'text' : 'password'" name="password_confirmation"
-                            class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-600"
+                        <input :type="show ? 'text' : 'password'" name="password_confirmation" placeholder="Konfirmasi Password Baru!"
+                            class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-600 @error('password_confirmation') ring-2 ring-rose-500 border-transparent @enderror"
                             required>
-                    </div>
-
-                    <div class="flex items-center gap-2 pt-1">
-                        <input id="logout_others" type="checkbox" name="logout_others" value="1"
-                            class="rounded border-slate-300 text-cyan-600 focus:ring-cyan-600">
-                        <label for="logout_others" class="text-sm text-slate-700">Keluar dari semua perangkat
-                            lain</label>
                     </div>
 
                     <div class="pt-2">
@@ -123,7 +116,7 @@
                 <p class="text-lg font-bold text-sky-900">Unduh Template Import Laporan </p>
                 <p class=" font-light mb-3 ">Klik tombol untuk mengunduh template</p>
                 <div>
-                    <a href="{{ route('stunting.template') }}"
+                    <a href="{{ route('kader.laporan.template') }}"
                         class="rounded-md bg-green-700 px-4 py-2 text-white hover:bg-green-900">
                         Unduh Template
                     </a>

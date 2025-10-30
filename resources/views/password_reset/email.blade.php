@@ -10,23 +10,6 @@
     <title>Lupa Password</title>
 </head>
 
-{{-- SweetAlert untuk login gagal --}}
-@if ($errors->any())
-    <div class="bg-gray-900/70 fixed inset-0 flex items-center justify-center z-50 ">
-        <div class="bg-white rounded-lg p-6 shadow-lg animate-jump-in duration-100">
-            <p class="text-2xl font-bold text-center">Login Gagal</p>
-            <svg xmlns="http://www.w3.org/2000/svg" class="size-24 mx-auto text-red-600" width="24" height="24"
-                viewBox="0 0 24 24">
-                <path fill="currentColor"
-                    d="M12.884 2.532c-.346-.654-1.422-.654-1.768 0l-9 17A1 1 0 0 0 3 21h18a.998.998 0 0 0 .883-1.467zM13 18h-2v-2h2zm-2-4V9h2l.001 5z" />
-            </svg>
-            <p class="mt-3 text-center">Silahkan Cek Kembali Username dan Password Anda</p>
-            <a href="/"
-                class="bg-gradient-to-r text-center max-w-28 from-sky-900 to-cyan-600 text-white px-4 py-2 mt-4 rounded-md mx-auto block hover:scale-105 transition transform duration-200 ease-in-out">Kembali</a>
-
-        </div>
-    </div>
-@endif
 
 <body
     class="min-h-screen bg-gradient-to-br from-blue-900 via-blue-300 to-cyan-900 flex items-center justify-center py-10">
@@ -67,7 +50,8 @@
                                        shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5 mt-3">Kirim
                             Link Reset</button>
                         <br>
-                        <a href="/" class="mt-2 inline-flex w-full items-center justify-center rounded-2xl bg-white text-sky-900 font-semibold py-3
+                        <a href="/"
+                            class="mt-2 inline-flex w-full items-center justify-center rounded-2xl bg-white text-sky-900 font-semibold py-3
                                       ring-1 ring-sky-900/80 hover:bg-sky-50 transition">Kembali</a>
                     </form>
 

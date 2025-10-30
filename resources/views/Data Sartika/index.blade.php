@@ -33,20 +33,10 @@
                 Tambah
             </button>
             {{-- import --}}
-            <div class="flex gap-3">
-                <div class="bg-gray-200 p-2 rounded-md">
-                    <form action="{{ route('sartika.import') }}" method="POST" enctype="multipart/form-data"
-                        class="flex items-center gap-3">
-                        @csrf
-                        <input type="file" name="file" accept=".xlsx,.xls,.csv"
-                            class="block w-full text-sm text-black" required>
-                        <button type="submit"
-                            class="bg-orange-600 hover:bg-orange-800 p-1 px-3 text-center font-semibold text-sm border-2 border-white text-white drop-shadow-md rounded-sm scale-100 hover:scale-105 transition ease-in-out duration-100">
-                            Import
-                        </button>
-                    </form>
-                </div>
-            </div>
+            <button onclick="openImportModal(); event.stopPropagation()"
+                class="bg-orange-600 hover:bg-orange-800 p-1 px-3 text-center font-semibold text-sm border-2 border-white text-white drop-shadow-md rounded-sm scale-100 hover:scale-105 transition ease-in-out duration-100">
+                Import
+            </button>
         </div>
         <div
             class="w-full bg-white p-2 mt-5 rounded-lg shadow-lg  animate-fade-up animate-once animate-duration-1000 animate-ease-out">
@@ -149,8 +139,7 @@
                 onclick="event.stopPropagation()">
                 <div class="flex items-center gap-3 mb-3">
                     <div class="rounded-full bg-orange-100 text-orange-600 p-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="size-5">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5">
                             <path
                                 d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
                             <path
@@ -186,7 +175,6 @@
         </div>
     </div>
 
-
     {{-- Modal Konfirmasi Hapus --}}
     <div class="hidden" id="deleteModal">
         <div class="fixed inset-0 flex  items-center justify-center bg-gray-900 bg-opacity-50">
@@ -216,6 +204,51 @@
                         </button>
                     </form>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Modal import --}}
+    <div class="hidden" id="importModal">
+        <div class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+            <div class="bg-white rounded-lg shadow-lg w-full max-w-md animate-jump-in p-5">
+                <div class="flex justify-between items-center mb-3">
+                    <div class="flex gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-orange-500" width="24"
+                            height="24" viewBox="0 0 24 24">
+                            <path fill="currentColor"
+                                d="M15.414 1H3v12.232A6.5 6.5 0 0 1 11.124 23H21V6.586zM14.5 7.5V3L19 7.5z" />
+                            <path fill="currentColor"
+                                d="m7.05 14.088l4.858 4.914l-4.858 4.914l-1.422-1.406l2.48-2.508H.997v-2h7.11l-2.48-2.508z" />
+                        </svg>
+                        <h2 class="text-lg font-semibold text-slate-800">Import Data Posyandu</h2>
+                    </div>
+                    <button onclick="closeImportModal()" class="text-slate-400 hover:text-slate-600">&times;</button>
+                </div>
+
+                <p class="mb-3">Silahkan download template excel <a href="{{ route('sartika.template') }}"
+                        class="text-blue-600 underline">Klik Disini!</a></p>
+
+
+                <form action="{{ route('sartika.import') }}" method="POST" enctype="multipart/form-data"
+                    class="mt-1">
+                    @csrf
+                    <div class="">
+                        <input type="file" name="file" accept=".xlsx,.xls,.csv" required
+                            class="w-full text-sm text-black">
+                    </div>
+                    <p class="text-sm text-slate-400 mb-4">Gunakan excel sesuai dengan template yang disdiakan (max
+                        20MB).</p>
+
+                    <div class="flex justify-end gap-2">
+                        <button type="button" onclick="closeImportModal()"
+                            class="px-4 py-2 bg-gray-300 rounded">Batal</button>
+                        <button type="submit"
+                            class="px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700">Import</button>
+                    </div>
+                </form>
+
+
             </div>
         </div>
     </div>
@@ -276,6 +309,27 @@
         let modal = document.getElementById('deleteModal');
         modal.classList.add('hidden');
     }
+</script>
+
+{{-- skript import --}}
+<script>
+    function openImportModal() {
+        document.getElementById('importModal').classList.remove('hidden');
+    }
+
+    function closeImportModal() {
+        document.getElementById('importModal').classList.add('hidden');
+    }
+
+    // optional: tutup modal saat klik backdrop
+    document.addEventListener('click', function(e) {
+        const modal = document.getElementById('importModal');
+        if (!modal || modal.classList.contains('hidden')) return;
+        const container = modal.querySelector('.bg-white');
+        if (!container.contains(e.target)) {
+            closeImportModal();
+        }
+    });
 </script>
 
 </html>
