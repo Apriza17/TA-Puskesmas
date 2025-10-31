@@ -21,12 +21,13 @@ class AuthController extends Controller
         Validator::make($request->all(),[
             'name'=>'required',
             'email'=>'email|required',
-            'password'=>'required',
+            'password'=>'required|min:8',
         ],[
             'name.required'=>'Nama wajib diisi',
             'email.email'=>'Email tidak valid',
             'email.required'=>'Email wajib diisi',
             'password.required'=>'Password wajib diisi',
+            'password.min'=>'Password minimal 8 karakter',
         ])->validate();
 
         user::create([
@@ -35,7 +36,7 @@ class AuthController extends Controller
             'password'=>Hash::make($request->password),
             'role'=>'admin',
         ]);
-        return redirect('/');
+        return redirect('/')->with('success','Registrasi Berhasil! Silahkan Login');
     }
 
     public function viewLogin()
