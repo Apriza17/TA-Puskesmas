@@ -25,7 +25,7 @@
         </div>
         {{-- FILTER --}}
         <div class="flex flex-wrap justify-end gap-3 mr-52">
-            <span class="py-1 px-2 rounded-sm border-2 border-white bg-sky-900 text-white">Filter Posyandu</span>
+            <span class="py-1 px-2 rounded-md border-2 border-white bg-sky-900 text-white">Filter Posyandu</span>
 
             <form method="GET" action="{{ route('Laporan-Gizi') }}"
                 class="flex flex-wrap items-center gap-3 text-black">

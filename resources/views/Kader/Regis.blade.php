@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @vite('resources/css/app.css')
     <title>Laporan Anak</title>
+    <link rel="icon" href="{{ asset('img/favlogo.png') }}">
 </head>
 
 <body class="bg-slate-200">
@@ -47,7 +48,7 @@
     @endif
 
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {{-- Alert sisa anak (opsional) --}}
+        {{-- Alert sisa anak (opsional)
         @isset($sisaBelumLapor)
             @if ($sisaBelumLapor > 0)
                 <div class="mb-5 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-amber-800">
@@ -55,14 +56,18 @@
                     bulan ini.
                 </div>
             @endif
-        @endisset
+        @endisset --}}
 
         <div class="lg:flex justify-center sm:flex-none gap-6">
             <div class="w-full mb-4 lg:hidden">
                 <div class="rounded-xl bg-white ring-1 ring-black/5 shadow-sm p-5">
-                    <h3 class="text-slate-800 font-semibold">Tips Pengisian</h3>
-                    <p class="text-sm text-slate-600 mt-2">Isi sesuai dengan data anak.
+                    <h3 class="text-slate-800 font-semibold">Tips Pengisian BB & TB</h3>
+                    <p class="text-sm text-slate-600 mt-2"> Untuk pengisian BB dan TB mohon
                         Gunakan titik (.) untuk desimal.</p>
+                </div>
+                <div class="rounded-xl bg-white ring-1 ring-black/5 shadow-sm p-5 mt-2">
+                    <h3 class="text-slate-800 font-semibold">Pengisian NIK & KK</h3>
+                    <p class="text-sm text-slate-600 mt-2">Gunakan Nomor KK jika anak belum memiliki NIK!</p>
                 </div>
 
             </div>
@@ -100,16 +105,30 @@
                         </div>
                         {{-- NIK --}}
                         <div class="mb-3">
-                            <label for="" class="font-semibold">NIK</label>
-                            <br>
-                            <input type="text" name="nik" id=""
-                                class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2
-                                        focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent placeholder:italic @error('nik') ring-2 ring-rose-500 border-transparent @enderror"
-                                placeholder="Masukan disini">
-                            @error('nik')
-                                <p class="text-red-500 font-normal text-sm">{{ $message }}</p>
-                            @enderror
+                            <label class="font-semibold block mb-2">Pilih salah satu NIK atau Nomor KK :</label>
+
+                            <div class="flex items-center gap-4 mb-2">
+                                <label class="flex items-center gap-2 text-sm">
+                                    <input type="radio" name="pilihan" value="nik" id="r-nik" checked>
+                                    NIK
+                                </label>
+                                <label class="flex items-center gap-2 text-sm">
+                                    <input type="radio" name="pilihan" value="kk" id="r-kk">
+                                    Nomor KK
+                                </label>
+                            </div>
+
+                            <div id="group-nik" class="mt-2">
+                                <input type="text" name="nik" placeholder="Masukan NIK yang valid"
+                                    class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 animate-rotate-x ease-in duration-100 focus:ring-cyan-600 placeholder:italic" />
+                            </div>
+
+                            <div id="group-kk" class="mt-2 hidden">
+                                <input type="text" name="nik" placeholder="Masukan Nomor KK yang valid"
+                                    class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 animate-rotate-x ease-in duration-100 focus:ring-cyan-600 placeholder:italic" />
+                            </div>
                         </div>
+
                         {{-- tanggal lahir --}}
                         <div class="mb-3">
                             <label for="" class="font-semibold">Tanggal Lahir</label>
@@ -129,7 +148,7 @@
                             <input type="number" step="any" name="berat_lahir" id=""
                                 class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2
                                         focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent placeholder:italic @error('berat_lahir') ring-2 ring-rose-500 border-transparent @enderror"
-                                placeholder="Masukan disini">
+                                placeholder="Contoh 3.5 Kg">
                             @error('berat_lahir')
                                 <p class="text-red-500 font-normal text-sm">{{ $message }}</p>
                             @enderror
@@ -141,7 +160,7 @@
                             <input type="number" step="any" name="tinggi_lahir" id=""
                                 class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2
                                         focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent placeholder:italic @error('tinggi_lahir') ring-2 ring-rose-500 border-transparent @enderror"
-                                placeholder="Masukan disini">
+                                placeholder="Contoh 30.2 Cm">
                             @error('tinggi_lahir')
                                 <p class="text-red-500 font-normal text-sm">{{ $message }}</p>
                             @enderror
@@ -154,18 +173,154 @@
             </div>
 
             {{-- PANEL INFO KECIL (opsional) --}}
-            <div class="lg:max-w-xs lg:visible invisible">
+            <div class="lg:max-w-xs lg:block hidden">
                 <div class="rounded-xl bg-white ring-1 ring-black/5 shadow-sm p-5">
-                    <h3 class="text-slate-800 font-semibold">Tips Pengisian</h3>
-                    <p class="text-sm text-slate-600 mt-2">Isi sesuai dengan data anak.
+                    <h3 class="text-slate-800 font-semibold">Tips Pengisian BB & TB</h3>
+                    <p class="text-sm text-slate-600 mt-2"> Untuk pengisian BB dan TB mohon
                         Gunakan titik (.) untuk desimal.</p>
+                </div>
+                <div class="rounded-xl bg-white ring-1 ring-black/5 shadow-sm p-5 mt-2">
+                    <h3 class="text-slate-800 font-semibold">Pengisian NIK & KK</h3>
+                    <p class="text-sm text-slate-600 mt-2">Gunakan Nomor KK jika anak belum memiliki NIK!</p>
                 </div>
             </div>
 
         </div>
     </div>
+    {{-- tabel --}}
+    <div class="pb-10">
+        {{-- Data Anak Posyandu --}}
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
+            <div class="lg:flex items-center justify-between gap-4 mb-4">
+                <h2 class="text-xl font-semibold text-sky-900">
+                    Data Anak Posyandu {{ optional(auth()->user()->posyandu)->nama ?? '-' }}
+                </h2>
+
+                <form method="GET" action="{{ url('/dashboard1') }}" class="flex gap-2 w-full sm:w-auto">
+                    {{-- Search --}}
+                    <div class="relative w-full sm:w-72">
+                        <label for="q" class="sr-only">Cari Anak</label>
+                        <input type="text" id="q" name="q" value="{{ $search ?? '' }}"
+                            placeholder="Cari nama / NIK…"
+                            class="w-full rounded-md border border-gray-300 px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-cyan-600" />
+                        <button type="submit" class="absolute inset-y-0 right-0 px-3 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="size-5 text-gray-500" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="m21 21-4.35-4.35m1.35-4.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    {{-- Sort --}}
+                    <div class="text-gray-500">
+                        <label for="sort" class="sr-only">Urutkan</label>
+                        <select id="sort" name="sort"
+                            class="rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-600"
+                            onchange="this.form.submit()">
+                            <option value="nama" {{ ($sort ?? 'nama') === 'nama' ? 'selected' : '' }}>
+                                Sort: Nama (A–Z)
+                            </option>
+                            <option value="laki" {{ ($sort ?? '') === 'laki' ? 'selected' : '' }}>
+                                Sort: Laki-laki saja
+                            </option>
+                            <option value="perempuan" {{ ($sort ?? '') === 'perempuan' ? 'selected' : '' }}>
+                                Sort: Perempuan saja
+                            </option>
+                            <option value="umur_terendah" {{ ($sort ?? '') === 'umur_terendah' ? 'selected' : '' }}>
+                                Sort: Umur terendah
+                            </option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+
+            <div class="bg-white rounded-lg shadow ring-1 ring-black/5 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr class="text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                <th class="px-4 py-3">NO</th>
+                                <th class="px-4 py-3">NIK</th>
+                                <th class="px-4 py-3">Nama</th>
+                                <th class="px-4 py-3">Jenis Kelamin</th>
+                                <th class="px-4 py-3">Tanggal Lahir</th>
+                                <th class="px-4 py-3">Umur (bulan)</th>
+                                <th class="px-4 py-3">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100 bg-white">
+                            @forelse ($anak as $a)
+                                @php
+                                    $umurBulan = \Carbon\Carbon::parse($a->tanggal_lahir)->diffInMonths(now());
+                                @endphp
+                                <tr class="text-sm text-gray-700">
+                                    <td class="px-4 py-3">
+                                        {{ $loop->iteration + ($anak->currentPage() - 1) * $anak->perPage(5) }}</td>
+                                    <td class="px-4 py-3 whitespace-nowrap font-mono">{{ $a->nik }}</td>
+                                    <td class="px-4 py-3">{{ $a->nama }}</td>
+                                    <td class="px-4 py-3">
+                                        {{ $a->kelamin === 'L' ? 'Laki-laki' : ($a->kelamin === 'P' ? 'Perempuan' : $a->kelamin) }}
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        {{ \Carbon\Carbon::parse($a->tanggal_lahir)->translatedFormat('d M Y') }}
+                                    </td>
+                                    <td class="px-4 py-3">{{ $umurBulan }}</td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <a href="{{ route('kader.anak.edit', $a) }}"
+                                            class="text-cyan-600 hover:underline mr-2">Edit</a>
+                                        <form action="{{ route('kader.anak.destroy', $a) }}" method="POST"
+                                            class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 hover:underline"
+                                                onclick="return confirm('Yakin ingin menghapus data anak ini?')">Hapus</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="px-4 py-6 text-center text-gray-500">
+                                        Belum ada data anak terdaftar pada posyandu ini.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                {{-- Pagination --}}
+                <div class="p-4">
+                    {{ $anak->links() }}
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 </body>
+
+<script>
+    const rNik = document.getElementById('r-nik');
+    const rKk = document.getElementById('r-kk');
+    const gNik = document.getElementById('group-nik');
+    const gKk = document.getElementById('group-kk');
+
+    function toggle() {
+        if (rNik.checked) {
+            gNik.classList.remove('hidden');
+            gKk.classList.add('hidden');
+        } else if (rKk.checked) {
+            gKk.classList.remove('hidden');
+            gNik.classList.add('hidden');
+        }
+    }
+
+    rNik.addEventListener('change', toggle);
+    rKk.addEventListener('change', toggle);
+
+    // inisialisasi ketika page load
+    toggle();
+</script>
 
 </html>

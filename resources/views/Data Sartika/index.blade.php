@@ -50,7 +50,7 @@
                     <th class="max-w-15">Aksi</th>
                 </tr>
 
-                @foreach ($posyandu as $p)
+                @forelse ($posyandu as $p)
                     <tr class="text-center font-normal text-slate-500">
                         <td>{{ $loop->iteration + ($posyandu->currentPage() - 1) * $posyandu->perPage(10) }}.</td>
                         <td>{{ $p->nama }}</td>
@@ -92,7 +92,11 @@
                             </button>
                         </td>
                     </tr>
-                @endforeach
+                    @empty
+                    <tr>
+                        <td colspan="4" class="text-center py-6 text-slate-500">Belum ada data</td>
+                    </tr>
+                @endforelse
             </table>
         </div>
         <div class="py-2">

@@ -34,20 +34,39 @@
             @endif
 
             @if (session('error'))
-                <div x-show="showError" x-init="setTimeout(() => showError = false, 5000)" x-transition.duration.500ms
-                    class="absolute top-5 right-5 bg-red-200 text-red-800 px-4 py-2 rounded shadow-lg z-50 animate-fade-left ease-in-out duration-200">
-                    <div class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="size-9" viewBox="0 0 24 24">
-                            <path fill="currentColor"
-                                d="M12.884 2.532c-.346-.654-1.422-.654-1.768 0l-9 17A1 1 0 0 0 3 21h18a.998.998 0 0 0 .883-1.467zM13 18h-2v-2h2zm-2-4V9h2l.001 5z" />
-                        </svg>
-                        <div class="max-w-xs">
-                            <p class="font-semibold">Gagal</p>
-                            <span class="break-words">{{ session('error') }}</span>
+                <div
+                    x-data="{ showError: true }"
+                    x-show="showError"
+                    x-init="setTimeout(() => showError = false, 6000)"
+                    x-transition.opacity.duration.500ms
+                    class="fixed top-5 right-5 w-80 bg-red-50 border border-red-300 text-red-900 px-4 py-3 rounded-lg shadow-lg z-50"
+                >
+                    <div class="flex items-start gap-3">
+                        <div class="pt-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="size-7 text-red-600" viewBox="0 0 24 24">
+                                <path fill="currentColor"
+                                    d="M12.884 2.532c-.346-.654-1.422-.654-1.768 0l-9 17A1 1 0 0 0 3 21h18a.998.998 0 0 0 .883-1.467zM13 18h-2v-2h2zm-2-4V9h2l.001 5z" />
+                            </svg>
                         </div>
+
+                        <div class="flex-1">
+                            <p class="font-bold text-red-700">Gagal</p>
+
+                            <div class="mt-1 text-sm leading-relaxed">
+                                {!! session('error') !!}
+                            </div>
+                        </div>
+
+                        <button
+                            @click="showError = false"
+                            class="text-red-400 hover:text-red-600 transition"
+                        >
+                            ✕
+                        </button>
                     </div>
                 </div>
             @endif
+
         </div>
 
     </div>

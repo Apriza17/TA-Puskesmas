@@ -91,12 +91,35 @@ class PosyanduController extends Controller
             'file' => 'required|file|mimes:xlsx,xls,csv,txt|max:20480',
         ]);
 
-        $import = new AnakPosyanduImport();
-        Excel::import($import, $request->file('file'));
+        try {
+            $import = new AnakPosyanduImport();
+            Excel::import($import, $request->file('file'));
 
-        return back()->with(
-            'success',
-            "Import selesai: {$import->created} data baru, {$import->updated} diperbarui."
-        );
+            return back()->with(
+                'success',
+                "Import selesai: {$import->created} data baru, {$import->updated} diperbarui."
+            );
+
+        } catch (ValidationException $e) {
+            // Ini menangkap error spesifik jika data di Excel tidak valid
+           $failures = $e->failures();
+
+            $messages = [];
+
+            foreach ($failures as $failure) {
+                $row = $failure->row();  // baris ke-
+                $attr = $failure->attribute(); // nama kolom
+                $errors = implode(', ', $failure->errors());
+
+                // buat pesan mudah dibaca
+                $messages[] = "Baris {$row} – Kolom '{$attr}': {$errors}";
+            }
+
+            return back()->with('error', implode("<br>", $messages));
+            
+        } catch (Exception $e) {
+            // Ini menangkap error umum lainnya (misal: koneksi db putus)
+            return back()->with('error', 'Terjadi kesalahan sistem: ' . $e->getMessage());
+        }
     }
 }

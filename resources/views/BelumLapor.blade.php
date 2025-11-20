@@ -7,6 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Belum Lapor</title>
     @vite('resources/css/app.css')
+    <link rel="icon" href="{{ asset('img/favlogo.png') }}">
+
 
 </head>
 
@@ -31,28 +33,38 @@
         </div>
     </div>
     {{-- section --}}
-    <div class="lg:px-52 md:px-28 py-5 mx-auto -mt-32">
-        @if (session('success'))
-            <div class="bg-green-100 text-green-800 p-3 rounded mb-4">
-                {{ session('success') }}
-            </div>
-        @endif
+    <div class="lg:px-52 md:px-28 py-5 mx-auto -mt-24">
 
         @if ($belumMelapor->isEmpty())
             <div class="bg-blue-100 text-blue-700 p-4 rounded shadow">
                 🎉 Semua posyandu telah melapor bulan ini.
             </div>
         @else
-            <form method="POST" class="" action="{{ route('laporan.kirimPesanBelum') }}">
+            <form method="POST" action="{{ route('laporan.kirimPesanBelum') }}">
                 @csrf
-                <div class="flex justify-between">
-                    <div></div>
-                    <input type="hidden" name="periode"
-                        value="{{ $tahun }}-{{ str_pad($bulan, 2, '0', STR_PAD_LEFT) }}">
-                    <button type="submit"
-                        class="mb-2 px-4 py-1 bg-orange-500 text-white font-semibold rounded-md shadow cursor-pointer hover:bg-orange-600">
-                        Kirim Pesan Pengingat
-                    </button>
+                <input type="hidden" name="periode"
+                    value="{{ $tahun }}-{{ str_pad($bulan, 2, '0', STR_PAD_LEFT) }}">
+
+                <div class="flex justify-between items-start mb-2 gap-4">
+                    <div class="flex-1">
+                        <label for="pesan" class="block text-sm font-medium text-white mb-1">
+                            Isi Pesan Pengingat
+                        </label>
+                        @php
+                            $namaBulan = \Carbon\Carbon::create()->month($bulan)->translatedFormat('F');
+                        @endphp
+                        {{-- <input type="text" name="pesan" id="pesan"> --}}
+                        <textarea id="pesan" name="pesan" rows="1"
+                            class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-600"
+                            placeholder="Tulis pesan pengingat untuk kader posyandu…">{{ old('pesan', "Yth. Kader Posyandu, mohon segera mengirim laporan penimbangan bulan $namaBulan $tahun melalui sistem pelaporan.") }}</textarea>
+                    </div>
+
+                    <div class="pt-6">
+                        <button type="submit"
+                            class="px-4 py-2 bg-orange-500 text-white font-semibold rounded-md shadow cursor-pointer hover:bg-orange-600">
+                            Kirim Pesan Pengingat
+                        </button>
+                    </div>
                 </div>
             </form>
 

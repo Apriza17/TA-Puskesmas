@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @vite('resources/css/app.css')
     <title>Rekap Sartika</title>
+    <link rel="icon" href="{{ asset('img/favlogo.png') }}">
+
 </head>
 
 <body class="bg-slate-100">
@@ -50,27 +52,29 @@
 
         <div class="rounded-xl bg-white ring-1 ring-black/5 shadow-lg overflow-x-auto">
             <table class="min-w-full text-sm">
-                <thead class="bg-sky-600 text-white">
-                    <tr>
-                        <th class="px-3 py-3 text-center">No</th>
-                        <th class="px-3 py-3 text-left">Nama Posyandu</th>
-                        <th class="px-3 py-3 text-center">Jumlah Balita</th>
+                <thead>
+                    {{-- Baris header utama --}}
+                    <tr class="bg-sky-600 text-white">
+                        <th class="px-3 py-3 text-center" rowspan="2">No</th>
+                        <th class="px-3 py-3 text-left" rowspan="2">Nama Posyandu</th>
+                        <th class="px-3 py-3 text-center" rowspan="2">Jumlah Balita</th>
+
+                        {{-- TB/U (merge colspan=4) --}}
                         <th class="px-3 py-3 text-center" colspan="4">TB/U</th>
-                        <th class="px-3 py-3 text-center">Balita Ditimbang</th>
-                        <th class="px-3 py-3 text-center">Balita Tidak Ditimbang</th>
-                        <th class="px-3 py-3 text-center">Angka Stunting (%)</th>
+
+                        <th class="px-3 py-3 text-center" rowspan="2">Balita Ditimbang</th>
+                        <th class="px-3 py-3 text-center" rowspan="2">Balita Tidak Ditimbang</th>
+                        <th class="px-3 py-3 text-center" rowspan="2">Angka Stunting (%)</th>
                     </tr>
-                    <tr class="bg-sky-700 text-slate-200">
-                        <th></th>
-                        <th></th>
-                        <th></th>
+
+                    {{-- Baris header kedua (sub header TB/U) --}}
+                    <tr class="bg-sky-600 text-slate-200">
+
                         <th class="px-2 py-2 text-center">Sangat Pendek</th>
                         <th class="px-2 py-2 text-center">Pendek</th>
                         <th class="px-2 py-2 text-center">Normal</th>
                         <th class="px-2 py-2 text-center">Tinggi</th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
+
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-200">

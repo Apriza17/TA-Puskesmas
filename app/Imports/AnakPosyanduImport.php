@@ -9,15 +9,46 @@ use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
-use Maatwebsite\Excel\Concerns\SkipsOnError;
-use Maatwebsite\Excel\Concerns\SkipsErrors;
-use Maatwebsite\Excel\Concerns\SkipsOnFailure;
-use Maatwebsite\Excel\Concerns\SkipsFailures;
+use Maatwebsite\Excel\Concerns\WithValidation;
+
 use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
 
-class AnakPosyanduImport implements ToCollection, WithHeadingRow, WithChunkReading, SkipsOnError, SkipsOnFailure
+class AnakPosyanduImport implements ToCollection, WithHeadingRow, WithChunkReading, WithValidation
 {
-    use SkipsErrors, SkipsFailures;
+    // HAPUS: use SkipsErrors, SkipsFailures;
+
+    public function rules(): array
+    {
+        return [
+            'posyandu_nama' => ['required', 'string', 'max:255'],
+            'nik'           => ['nullable', 'numeric', 'digits:16'],
+            'nama'          => ['required', 'string', 'max:255'],
+            'kelamin'       => ['required', 'string', 'in:L,P,l,p,LAKI-LAKI,PEREMPUAN'],
+            'tanggal_lahir' => ['required',
+            function ($attribute, $value, $fail) {
+                // gunakan helper parseDate() yang sudah kamu buat
+                if ($this->parseDate($value) === null) {
+                    $fail('Format ' . $attribute . ' tidak valid. Gunakan tanggal yang benar (misal 08/10/2024) atau tanggal Excel.');
+                }
+            },
+        ],
+            'berat_lahir'   => ['nullable', 'numeric'],
+            'tinggi_lahir'  => ['nullable', 'numeric'],
+        ];
+    }
+
+    public function customValidationMessages(): array
+    {
+        return [
+            'posyandu_nama.required' => 'Nama Posyandu wajib diisi.',
+            'nama.required'          => 'Nama anak wajib diisi.',
+            'nik.digits'             => 'NIK harus 16 digit angka.',
+            'nik.numeric'            => 'NIK harus berupa angka.',
+            'kelamin.required'       => 'Jenis kelamin wajib diisi.',
+            'kelamin.in'             => 'Jenis kelamin harus L atau P.',
+            'tanggal_lahir.required' => 'Tanggal lahir wajib diisi.',
+        ];
+    }
 
     public int $created = 0;
     public int $updated = 0;
@@ -34,10 +65,6 @@ class AnakPosyanduImport implements ToCollection, WithHeadingRow, WithChunkReadi
             $jk   = $this->normalizeJK($row['kelamin'] ?? null);
             $tgl  = $this->parseDate($row['tanggal_lahir'] ?? null);
 
-            if (!$pn || !$nama || !$jk || !$tgl) {
-                // Lewati baris yang tidak valid minimal
-                continue;
-            }
 
             $posyandu = $this->getPosyandu($pn);
 
@@ -131,4 +158,5 @@ class AnakPosyanduImport implements ToCollection, WithHeadingRow, WithChunkReadi
         if ($v === null || $v === '') return null;
         return (float) str_replace(',', '.', (string)$v);
     }
+
 }

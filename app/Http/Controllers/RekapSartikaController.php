@@ -81,13 +81,13 @@ class RekapSartikaController extends Controller
                 // Tinggi        : > +3 SD
                 // Kolom standar silakan sesuaikan dg tabelmu:
                 // sd_min_3, sd_min_2, sd_plus_3 (atau nama yang ada di tabel)
-                $min3 = $std->sd_min_3 ?? ($std->sd_min3 ?? null);
                 $min2 = $std->sd_min_2 ?? ($std->sd_min2 ?? null);
+                $min1 = $std->sd_min_1 ?? ($std->sd_min1 ?? null);
                 $plus3 = $std->sd_plus_3 ?? ($std->sd_plus3 ?? null);
 
-                if ($min3 !== null && $tb < $min3) {
+                if ($min2 !== null && $tb < $min2) {
                     $sangatPendek++;
-                } elseif ($min2 !== null && $tb < $min2) {
+                } elseif ($min1 !== null && $tb < $min1) {
                     $pendek++;
                 } elseif ($plus3 !== null && $tb > $plus3) {
                     $tinggi++;

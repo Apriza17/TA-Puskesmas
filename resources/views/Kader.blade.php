@@ -97,7 +97,7 @@
                     <th class="text-left">Email</th>
                     <th>Aksi</th>
                 </tr>
-                @foreach ($users as $u)
+                @forelse ($users as $u)
                     <tr class=" text-sm font-normal text-slate-500">
                         <td class="max-w-5 text-center">{{ $loop->iteration }}</td>
                         <td>{{ $u->name }}</td>
@@ -115,7 +115,9 @@
                             </button>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <td colspan="4" class="text-center py-6 text-slate-500">Belum ada kader ditambahkan</td>
+                @endforelse
             </table>
         </div>
         {{-- Modal konfirmasi hapus --}}

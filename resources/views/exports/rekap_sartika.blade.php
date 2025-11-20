@@ -1,25 +1,34 @@
-@vite(['resources/css/app.css'])
 <table>
+    {{-- Judul Laporan --}}
     <tr>
-        <td colspan="10" class="text-sky-900 font-bold text-center text-lg">
+        <td colspan="10" style="text-align: center; font-weight: bold; font-size: 14pt;">
             Rekap Sartika — {{ $tanggal->isoFormat('MMMM YYYY') }}
         </td>
     </tr>
+    <tr></tr> {{-- Baris kosong sebagai pemisah --}}
 </table>
 
-<table class="border-2 border-slate-500">
+<table>
     <thead>
+        {{-- Baris header utama --}}
         <tr>
-            <th>No</th>
-            <th>Nama Posyandu</th>
-            <th>Jumlah Balita</th>
+            <th rowspan="2">No</th>
+            <th rowspan="2">Nama Posyandu</th>
+            <th rowspan="2">Jumlah Balita</th>
+
+            {{-- TB/U --}}
+            <th colspan="4">TB/U</th>
+
+            <th rowspan="2">Balita Ditimbang</th>
+            <th rowspan="2">Balita Tidak Ditimbang</th>
+            <th rowspan="2">Angka Stunting (%)</th>
+        </tr>
+        {{-- Baris header kedua --}}
+        <tr>
             <th>Sangat Pendek</th>
             <th>Pendek</th>
             <th>Normal</th>
             <th>Tinggi</th>
-            <th>Balita Ditimbang</th>
-            <th>Balita Tidak Ditimbang</th>
-            <th>Angka Stunting (%)</th>
         </tr>
     </thead>
     <tbody>
@@ -37,9 +46,10 @@
                 <td>{{ is_null($r->persen_stunting) ? '-' : $r->persen_stunting }}</td>
             </tr>
         @endforeach
+        {{-- Footer Rata-rata --}}
         <tr>
-            <td colspan="9" style="text-align:right; font-weight:bold;">Rata-Rata Stunting</td>
-            <td style="font-weight:bold;">
+            <td colspan="9" style="text-align: right; font-weight: bold;">Rata-Rata Stunting</td>
+            <td style="font-weight: bold;">
                 {{ is_null($rataRata) ? '-' : $rataRata }}
             </td>
         </tr>

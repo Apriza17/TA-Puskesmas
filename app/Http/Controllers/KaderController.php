@@ -33,18 +33,45 @@ class KaderController extends Controller
         $query = Anak::where('posyandu_id', $posyanduId);
 
         // Pencarian opsional (nama / NIK)
-        if ($search = $request->input('q')) {
+        $search = $request->input('q');
+        if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('nama', 'like', "%{$search}%")
                 ->orWhere('nik', 'like', "%{$search}%");
             });
         }
 
-        // Urutkan dan paginate
-        $anak = $query->orderBy('nama')->paginate(5)->withQueryString();
+        // 🔽 Sort / filter
+        $sort = $request->input('sort', 'nama'); // default: nama
 
-        return view('Kader.Dash', compact('user','anak', 'search'));
+        switch ($sort) {
+            case 'laki':
+                // tampilkan hanya laki-laki, urut nama
+                $query->where('kelamin', 'L')->orderBy('nama');
+                break;
+
+            case 'perempuan':
+                // tampilkan hanya perempuan, urut nama
+                $query->where('kelamin', 'P')->orderBy('nama');
+                break;
+
+            case 'umur_terendah':
+                // umur paling muda dulu (tgl lahir paling baru)
+                $query->orderBy('tanggal_lahir', 'desc');
+                break;
+
+            case 'nama':
+            default:
+                $query->orderBy('nama');
+                break;
+        }
+
+        // Paginate
+        $anak = $query->paginate(5)->withQueryString();
+
+        return view('Kader.Dash', compact('user', 'anak', 'search', 'sort'));
     }
+
 
     public function edit(Anak $anak)
 {
@@ -100,9 +127,52 @@ class KaderController extends Controller
     }
 
 
-    public function viewRegis(){
-        $posyandu = Posyandu::all();
-        return view('Kader.Regis',compact('posyandu'));
+    public function viewRegis(Request $request)
+    {
+        $user = Auth::user();
+        $posyanduId = $user->posyandu_id ?? optional($user->posyandu)->id;
+
+        // Query dasar: anak pada posyandu kader
+        $query = Anak::where('posyandu_id', $posyanduId);
+
+        // Pencarian opsional (nama / NIK)
+        $search = $request->input('q');
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                ->orWhere('nik', 'like', "%{$search}%");
+            });
+        }
+
+        // 🔽 Sort / filter
+        $sort = $request->input('sort', 'nama'); // default: nama
+
+        switch ($sort) {
+            case 'laki':
+                // tampilkan hanya laki-laki, urut nama
+                $query->where('kelamin', 'L')->orderBy('nama');
+                break;
+
+            case 'perempuan':
+                // tampilkan hanya perempuan, urut nama
+                $query->where('kelamin', 'P')->orderBy('nama');
+                break;
+
+            case 'umur_terendah':
+                // umur paling muda dulu (tgl lahir paling baru)
+                $query->orderBy('tanggal_lahir', 'desc');
+                break;
+
+            case 'nama':
+            default:
+                $query->orderBy('nama');
+                break;
+        }
+
+        // Paginate
+        $anak = $query->paginate(5)->withQueryString();
+
+        return view('Kader.Regis', compact('user', 'anak', 'search', 'sort'));
     }
 
     public function simpanRegis(Request $request){
@@ -110,11 +180,20 @@ class KaderController extends Controller
         $request->validate([
             'nama' => 'required',
             'kelamin' => 'required',
-            'nik' => 'required|max:16',
+            'nik' => 'required|max:16|unique:anak,nik',
             'tanggal_lahir' => 'required|date',
             'berat_lahir' => 'required|numeric',
             'tinggi_lahir' => 'required|numeric',
+        ],[
+            'nik.unique' => 'NIK sudah terdaftar untuk anak lain.',
+            'nik.max' => 'NIK maksimal 16 karakter.',
+            'kelamin.in' => 'Jenis kelamin harus diisi dengan L atau P.',
+            'berat_lahir.min' => 'Berat lahir harus bernilai positif.',
+            'tinggi_lahir.min' => 'Tinggi lahir harus bernilai positif.',
+            'berat_lahir.numeric' => 'Berat lahir harus berupa angka.',
+            'tinggi_lahir.numeric' => 'Tinggi lahir harus berupa angka.',
         ]);
+
         $kader = auth()->user();//untuk mengetahui siapa yg login
 
         $anak = Anak::create([
@@ -248,20 +327,29 @@ class KaderController extends Controller
       public function import(Request $request)
     {
         $request->validate([
-            'file' => ['required','file','mimes:xlsx,xls,csv','max:20480'],
+            'file' => ['required', 'file', 'mimes:xlsx,xls,csv', 'max:20480'],
         ]);
 
         try {
+            // kirim user (kader) ke import untuk cek posyandu
             $import = new LaporanWorkbookImport($request->user());
+
             Excel::import($import, $request->file('file'));
 
-            $msg = "Import selesai. Berhasil: {$import->successCount}, Duplikat: {$import->duplicateCount}, "
-                . "Skipped: {$import->skipCount}, Error: {$import->errorCount}.";
+            $msg = "Import selesai. "
+                . "Berhasil: {$import->successCount}, "
+                . "Duplikat: {$import->duplicateCount}, "
+                . "Dilewati: {$import->skipCount}, "
+                . "Error: {$import->errorCount}.";
+
             return back()->with('success', $msg);
 
         } catch (SheetNotFoundException $e) {
-            // mis. tidak ada sheet, sheet corrupt/tersembunyi, atau workbook kosong
-            return back()->with('error', 'File tidak memiliki sheet yang valid. Pastikan ada minimal satu sheet berisi data.');
+            return back()->with(
+                'error',
+                'File tidak memiliki sheet yang valid. '
+                . 'Pastikan file berisi sheet Januari–November dan minimal satu sheet berisi data.'
+            );
         } catch (\Throwable $e) {
             report($e);
             return back()->with('error', 'Gagal mengimpor: '.$e->getMessage());
