@@ -175,44 +175,62 @@ class KaderController extends Controller
         return view('Kader.Regis', compact('user', 'anak', 'search', 'sort'));
     }
 
-    public function simpanRegis(Request $request){
-
-        $request->validate([
-            'nama' => 'required',
-            'kelamin' => 'required',
-            'nik' => 'required|max:16|unique:anak,nik',
+    public function simpanRegis(Request $request)
+    {
+        $rules = [
+            'nama'          => 'required',
+            'kelamin'       => 'required|in:L,P',
             'tanggal_lahir' => 'required|date',
-            'berat_lahir' => 'required|numeric',
-            'tinggi_lahir' => 'required|numeric',
-        ],[
-            'nik.unique' => 'NIK sudah terdaftar untuk anak lain.',
-            'nik.max' => 'NIK maksimal 16 karakter.',
-            'kelamin.in' => 'Jenis kelamin harus diisi dengan L atau P.',
-            'berat_lahir.min' => 'Berat lahir harus bernilai positif.',
-            'tinggi_lahir.min' => 'Tinggi lahir harus bernilai positif.',
-            'berat_lahir.numeric' => 'Berat lahir harus berupa angka.',
-            'tinggi_lahir.numeric' => 'Tinggi lahir harus berupa angka.',
-        ]);
+            'berat_lahir'   => 'required|numeric|min:0',
+            'tinggi_lahir'  => 'required|numeric|min:0',
+            'pilihan'       => 'required|in:nik,kk',
+        ];
 
-        $kader = auth()->user();//untuk mengetahui siapa yg login
+        // validasi kondisional
+        if ($request->pilihan === 'nik') {
+            $rules['nik'] = 'required|max:16|unique:anak,nik';
+        } else {
+            // pakai no_kk tapi cek unique ke kolom nik
+            $rules['no_kk'] = 'required|max:16|unique:anak,nik';
+        }
+
+        $messages = [
+            'nik.unique'       => 'NIK sudah terdaftar untuk anak lain.',
+            'nik.max'          => 'NIK maksimal 16 karakter.',
+            'no_kk.unique'     => 'Nomor KK sudah terdaftar untuk anak lain.',
+            'no_kk.max'        => 'Nomor KK maksimal 16 karakter.',
+            'kelamin.in'       => 'Jenis kelamin harus diisi dengan L atau P.',
+            'berat_lahir.min'  => 'Berat lahir harus bernilai positif.',
+            'tinggi_lahir.min' => 'Tinggi lahir harus bernilai positif.',
+        ];
+
+        $request->validate($rules, $messages); // [web:5][web:21]
+
+        $kader = auth()->user();
+
+        // gabungkan ke satu nilai untuk kolom nik
+        $identitas = $request->pilihan === 'nik'
+            ? $request->nik
+            : $request->no_kk;
 
         $anak = Anak::create([
-            'nama' => $request->nama,
-            'kelamin' => $request->kelamin,
-            'nik' => $request->nik,
+            'nama'          => $request->nama,
+            'kelamin'       => $request->kelamin,
+            'nik'           => $identitas, // kolom yang sama untuk NIK / KK
             'tanggal_lahir' => $request->tanggal_lahir,
-            'berat_lahir' => $request->berat_lahir,
-            'tinggi_lahir' => $request->tinggi_lahir,
-            'posyandu_id' => $kader->posyandu_id,
+            'berat_lahir'   => $request->berat_lahir,
+            'tinggi_lahir'  => $request->tinggi_lahir,
+            'posyandu_id'   => $kader->posyandu_id,
         ]);
+
         $admins = User::where('role','admin')->get();
         foreach ($admins as $admin) {
             $admin->notify(new TambahNotifikasi($anak, $kader));
         }
 
         return redirect('/Regis-anak')->with('success','Data anak ditambahkan');
-
     }
+
 
     public function viewRegis1(){
         $posyandu = Posyandu::all();
@@ -359,7 +377,7 @@ class KaderController extends Controller
 
     public function viewPesan(Request $request)
     {
-        $items = Pesan::where('posyandu_id', $request->user()->id)
+        $items = Pesan::where('posyandu_id', $request->user()->posyandu_id)
             ->latest('created_at')
             ->paginate(5);
 
@@ -368,18 +386,21 @@ class KaderController extends Controller
 
     public function showPesan(Pesan $pesan)
     {
-       abort_unless($pesan->posyandu_id === auth()->id(), 403);
+        abort_unless($pesan->posyandu_id === auth()->user()->posyandu_id, 403);
         return view('Kader.Pesandetail', compact('pesan'));
     }
 
     public function markRead(Pesan $pesan)
     {
-        abort_unless($pesan->posyandu_id === auth()->id(), 403);
-       if (!$pesan->terbaca) {
+        abort_unless($pesan->posyandu_id === auth()->user()->posyandu_id, 403);
+
+        if (!$pesan->terbaca) {
             $pesan->update(['terbaca' => true]);
         }
-        return back()->with('success','Pesan ditandai terbaca.');
+
+        return back()->with('success', 'Pesan ditandai terbaca.');
     }
+
 
      public function riwayatLaporan(Request $request)
     {

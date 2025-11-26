@@ -22,11 +22,10 @@ class LaporanWorkbookImport implements WithMultipleSheets
         // satu handler untuk semua sheet
         $handler = new LaporanSheetImport($this);
 
-        // Januari–November = index 0..10
+        // Januari–November
         return [
-            0  => $handler, // Januari
-            1  => $handler, // Februari
-            2  => $handler,
+            1  => $handler, // Januari
+            2  => $handler, 
             3  => $handler,
             4  => $handler,
             5  => $handler,
@@ -34,10 +33,9 @@ class LaporanWorkbookImport implements WithMultipleSheets
             7  => $handler,
             8  => $handler,
             9  => $handler,
-            10 => $handler, // November
+            10 => $handler,
             11 => $handler,
-            // kalau nanti mau Desember tinggal tambah:
-            // 11 => $handler,
+            12 => $handler, // Desember
         ];
     }
 }

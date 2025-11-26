@@ -29,7 +29,7 @@
                     Ulu.
                     Lakukan Pengecekan
                     sekarang?</p>
-                <a href=""
+                <a href="/Laporan"
                     class="bg-cyan-400 hover:bg-cyan-600 outline outline-2 outline-white rounded-xl px-5 text-sm font-semibold">Klik
                     Disini</a>
             </div>
@@ -178,7 +178,7 @@
             </div>
             {{-- kalender --}}
             <div
-                class=" bg-white animate-fade-up animate-once animate-duration-1000 animate-ease-out animate-delay-[400ms] drop-shadow-lg rounded-sm w-96">
+                class=" bg-white animate-fade-up animate-once animate-duration-1000 animate-ease-out animate-delay-[400ms] drop-shadow-lg rounded-2xl w-96">
                 <div class="bg-white shadow-soft rounded-2xl p-5" x-data="miniCalendar()" x-init="init()">
                     <div class="flex items-center justify-between mb-3">
                         <button class="p-2 rounded-lg hover:bg-slate-100" @click="prevMonth()" aria-label="Prev">

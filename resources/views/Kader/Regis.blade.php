@@ -120,13 +120,19 @@
 
                             <div id="group-nik" class="mt-2">
                                 <input type="text" name="nik" placeholder="Masukan NIK yang valid"
-                                    class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 animate-rotate-x ease-in duration-100 focus:ring-cyan-600 placeholder:italic" />
+                                    class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 animate-rotate-x ease-in duration-100 focus:ring-cyan-600 placeholder:italic @error('nik') ring-2 ring-rose-500 border-transparent @enderror" />
                             </div>
 
                             <div id="group-kk" class="mt-2 hidden">
-                                <input type="text" name="nik" placeholder="Masukan Nomor KK yang valid"
-                                    class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 animate-rotate-x ease-in duration-100 focus:ring-cyan-600 placeholder:italic" />
+                                <input type="text" name="no_kk" placeholder="Masukan Nomor KK yang valid"
+                                    class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 animate-rotate-x ease-in duration-100 focus:ring-cyan-600 placeholder:italic @error('nik') ring-2 ring-rose-500 border-transparent @enderror" />
                             </div>
+                            @error('nik')
+                                <p class="text-red-500 font-normal text-sm mb-3">{{ $message }}</p>
+                            @enderror
+                            @error('no_kk')
+                                <p class="text-red-500 font-normal text-sm mb-3">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         {{-- tanggal lahir --}}
