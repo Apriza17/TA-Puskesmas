@@ -131,10 +131,10 @@
                                 Sort: Nama (A–Z)
                             </option>
                             <option value="laki" {{ ($sort ?? '') === 'laki' ? 'selected' : '' }}>
-                                Sort: Laki-laki saja
+                                Sort: Laki-laki 
                             </option>
                             <option value="perempuan" {{ ($sort ?? '') === 'perempuan' ? 'selected' : '' }}>
-                                Sort: Perempuan saja
+                                Sort: Perempuan
                             </option>
                             <option value="umur_terendah" {{ ($sort ?? '') === 'umur_terendah' ? 'selected' : '' }}>
                                 Sort: Umur terendah
@@ -166,7 +166,16 @@
                                 <tr class="text-sm text-gray-700">
                                     <td class="px-4 py-3">
                                         {{ $loop->iteration + ($anak->currentPage() - 1) * $anak->perPage(5) }}</td>
-                                    <td class="px-4 py-3 whitespace-nowrap font-mono">{{ $a->nik }}</td>
+                                    <td class="px-4 py-3 whitespace-nowrap font-mono">
+                                        {{-- Jika is_kk true, warna oranye. Jika false (NIK), warna default --}}
+                                        <span class="{{ $a->is_kk ? 'text-orange-600 font-bold' : 'text-gray-700' }}">
+                                            {{ $a->nik }}
+                                        </span>
+                                        {{-- Opsional: Label penanda --}}
+                                        @if($a->is_kk)
+                                            <span class="text-[10px] bg-orange-100 text-orange-700 px-1 rounded ml-1 border border-orange-200">KK</span>
+                                        @endif
+                                    </td>
                                     <td class="px-4 py-3">{{ $a->nama }}</td>
                                     <td class="px-4 py-3">
                                         {{ $a->kelamin === 'L' ? 'Laki-laki' : ($a->kelamin === 'P' ? 'Perempuan' : $a->kelamin) }}
