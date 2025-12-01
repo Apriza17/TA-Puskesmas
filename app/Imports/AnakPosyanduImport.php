@@ -10,13 +10,12 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithValidation;
-
+use Carbon\Carbon;
 use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
 
 class AnakPosyanduImport implements ToCollection, WithHeadingRow, WithChunkReading, WithValidation
 {
     // HAPUS: use SkipsErrors, SkipsFailures;
-
     public function rules(): array
     {
         return [
@@ -24,14 +23,11 @@ class AnakPosyanduImport implements ToCollection, WithHeadingRow, WithChunkReadi
             'nik'           => ['nullable', 'numeric', 'digits:16'],
             'nama'          => ['required', 'string', 'max:255'],
             'kelamin'       => ['required', 'string', 'in:L,P,l,p,LAKI-LAKI,PEREMPUAN'],
-            'tanggal_lahir' => ['required',
-            function ($attribute, $value, $fail) {
-                // gunakan helper parseDate() yang sudah kamu buat
+            'tanggal_lahir' => ['required', function ($attribute, $value, $fail) {
                 if ($this->parseDate($value) === null) {
                     $fail('Format ' . $attribute . ' tidak valid. Gunakan tanggal yang benar (misal 08/10/2024) atau tanggal Excel.');
                 }
-            },
-        ],
+            }],
             'berat_lahir'   => ['nullable', 'numeric'],
             'tinggi_lahir'  => ['nullable', 'numeric'],
         ];
@@ -55,6 +51,38 @@ class AnakPosyanduImport implements ToCollection, WithHeadingRow, WithChunkReadi
 
     /** cache posyandu by nama */
     protected array $pCache = [];
+
+    protected function parseDate($value): ?Carbon
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        // 1. Jika numeric -> Excel serial date
+        if (is_numeric($value)) {
+            try {
+                return Carbon::instance(ExcelDate::excelToDateTimeObject($value));
+            } catch (\Throwable $e) {
+                // lanjut ke percobaan lain
+            }
+        }
+
+        // 2. Coba format d/m/Y (08/10/2024)
+        try {
+            return Carbon::createFromFormat('d/m/Y', trim($value));
+        } catch (\Throwable $e) {
+            // lanjut
+        }
+
+        // 3. Coba format Y-m-d (2024-10-08)
+        try {
+            return Carbon::createFromFormat('Y-m-d', trim($value));
+        } catch (\Throwable $e) {
+            // gagal semua
+        }
+
+        return null;
+    }
 
     public function collection(Collection $rows)
     {
@@ -135,23 +163,6 @@ class AnakPosyanduImport implements ToCollection, WithHeadingRow, WithChunkReadi
         return $v === '' ? null : $v;
     }
 
-    protected function parseDate($v): ?\Carbon\Carbon
-    {
-        if ($v === null || $v === '') return null;
-
-        if (is_numeric($v)) {
-            try {
-                return \Carbon\Carbon::instance(ExcelDate::excelToDateTimeObject($v));
-            } catch (\Throwable $e) {
-                return null;
-            }
-        }
-        try {
-            return \Carbon\Carbon::parse($v);
-        } catch (\Throwable $e) {
-            return null;
-        }
-    }
 
     protected function toFloat($v): ?float
     {

@@ -26,7 +26,9 @@
             </a>
         </div>
     </div>
-
+    @if (session('success'))
+        <div class="mb-3 p-5 rounded-md bg-green-50 text-green-800 px-4 py-2">{{ session('success') }}</div>
+    @endif
     {{-- section --}}
     <div class="max-w-3xl mx-auto px-4 py-6">
 
